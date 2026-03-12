@@ -1,0 +1,176 @@
+/* Reset y tipografía */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Fondo general */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 40px;
+  background-image: url("/gym.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 32px;
+  background: rgba(10, 10, 10, 0.78);
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Título */
+h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 15, 15, 0.9);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.form input:focus {
+  border-color: #ff7ac4;
+  box-shadow: 0 0 0 1px rgba(255, 122, 196, 0.5);
+}
+
+/* Botones */
+button {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+button[type="submit"] {
+  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+  color: #fff;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.8),
+    0 0 24px rgba(255, 122, 196, 0.7);
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+button[type="button"] {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+button[type="button"]:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Separador */
+hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 24px 0;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(20, 20, 20, 0.85);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Enlaces de la tabla */
+td a {
+  color: #ff7ac4;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+td a:hover {
+  text-decoration: underline;
+}
+
+/* Botones de acciones */
+td button {
+  padding: 6px 12px;
+  font-size: 12px;
+  margin-right: 6px;
+  border-radius: 999px;
+}
+
+td button:first-child {
+  background: #7b5cff;
+  color: #fff;
+}
+
+td button:last-child {
+  background: #ff4f4f;
+  color: #fff;
+}
+
+td button:hover {
+  filter: brightness(1.1);
+}

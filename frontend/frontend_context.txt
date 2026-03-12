@@ -1,0 +1,479 @@
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\auth.ts ===
+// src/app/services/auth.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Observable, tap } from 'rxjs';
+import { UsuarioLogin } from '../models/usuario-login';
+import { Usuario } from '../models/usuario';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  private url = `${environment.apiUrl}/auth`;
+
+  constructor(private http: HttpClient) {}
+
+  login(data: UsuarioLogin): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.url}/login`, data)
+      .pipe(
+        tap(usuario => this.guardarUsuario(usuario))
+      );
+  }
+
+  logout(): void {
+    localStorage.removeItem('usuario');
+  }
+
+  guardarUsuario(usuario: Usuario): void {
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+  }
+
+  getUsuario(): Usuario | null {
+    const usuario = localStorage.getItem('usuario');
+    return usuario ? JSON.parse(usuario) : null;
+  }
+
+  isLogged(): boolean {
+    return !!this.getUsuario();
+  }
+
+  register(data: any) {
+  return this.http.post(`${this.url}/register`, data);
+}
+
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\noticia.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Noticia } from '../models/noticia';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class NoticiaService {
+
+  private url = `${environment.apiUrl}/noticias`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Noticia[]> {
+    return this.http.get<Noticia[]>(this.url);
+  }
+
+  getById(id: number): Observable<Noticia> {
+    return this.http.get<Noticia>(`${this.url}/${id}`);
+  }
+
+  create(noticia: Noticia) {
+    return this.http.post<Noticia>(this.url, noticia);
+  }
+
+  update(id: number, noticia: Noticia) {
+    return this.http.put<Noticia>(`${this.url}/${id}`, noticia);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.url}/${id}`);
+  }
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\posts.ts ===
+import { Injectable } from '@angular/core';
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class Posts {
+  
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\reserva.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Reserva } from '../models/reserva';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class ReservaService {
+
+  private url = `${environment.apiUrl}/reservas`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(this.url);
+  }
+
+  getById(id: number): Observable<Reserva> {
+    return this.http.get<Reserva>(`${this.url}/${id}`);
+  }
+
+  create(reserva: Reserva): Observable<Reserva> {
+    return this.http.post<Reserva>(this.url, reserva);
+  }
+
+  update(id: number, reserva: Reserva): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.url}/${id}`, reserva);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.url}/${id}`);
+  }
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\sala.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Sala } from '../models/sala';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class SalaService {
+
+  private url = `${environment.apiUrl}/salas`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Sala[]> {
+    return this.http.get<Sala[]>(this.url);
+  }
+
+  getById(id: number): Observable<Sala> {
+    return this.http.get<Sala>(`${this.url}/${id}`);
+  }
+  create(sala: Sala) {
+  return this.http.post<Sala>(this.url, sala);
+}
+
+update(id: number, sala: Sala) {
+  return this.http.put<Sala>(`${this.url}/${id}`, sala);
+}
+
+delete(id: number) {
+  return this.http.delete(`${this.url}/${id}`);
+}
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\servicio.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Servicio } from '../models/servicio';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class ServicioService {
+
+  private url = `${environment.apiUrl}/servicios`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Servicio[]> {
+    return this.http.get<Servicio[]>(this.url);
+  }
+
+  getById(id: number): Observable<Servicio> {
+    return this.http.get<Servicio>(`${this.url}/${id}`);
+  }
+
+  create(servicio: Servicio) {
+  return this.http.post<Servicio>(this.url, servicio);
+}
+
+update(id: number, servicio: Servicio) {
+  return this.http.put<Servicio>(`${this.url}/${id}`, servicio);
+}
+
+delete(id: number) {
+  return this.http.delete(`${this.url}/${id}`);
+}
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\sesion.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Sesion } from '../models/sesion';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class SesionService {
+
+  private url = `${environment.apiUrl}/sesiones`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Sesion[]> {
+    return this.http.get<Sesion[]>(this.url);
+  }
+
+  getById(id: number): Observable<Sesion> {
+    return this.http.get<Sesion>(`${this.url}/${id}`);
+  }
+
+  create(sesion: Sesion): Observable<Sesion> {
+    return this.http.post<Sesion>(this.url, sesion);
+  }
+
+  update(id: number, sesion: Sesion): Observable<Sesion> {
+    return this.http.put<Sesion>(`${this.url}/${id}`, sesion);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.url}/${id}`);
+  }
+
+  getSesionesHoy() { 
+    return this.http.get<any[]>(`${this.url}/hoy`); }
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\usuario.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Usuario } from '../models/usuario';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class UsuarioService {
+
+  private url = `${environment.apiUrl}/usuarios`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(this.url);
+  }
+
+  getById(id: number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/${id}`);
+  }
+
+  create(usuario: Usuario): Observable<Usuario> {
+    return this.http.post<Usuario>(this.url, usuario);
+  }
+
+  update(id: number, usuario: Usuario): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.url}/${id}`, usuario);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.url}/${id}`);
+  }
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\services\video.ts ===
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Video } from '../models/video';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class VideoService {
+
+  private url = `${environment.apiUrl}/videos`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Video[]> {
+    return this.http.get<Video[]>(this.url);
+  }
+
+  create(video: Video) {
+  return this.http.post<Video>(this.url, video);
+}
+
+update(id: number, video: Video) {
+  return this.http.put<Video>(`${this.url}/${id}`, video);
+}
+
+delete(id: number) {
+  return this.http.delete(`${this.url}/${id}`);
+}
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\noticia.ts ===
+export interface Noticia {
+  idNoticia: number;
+  titulo: string;
+  contenido: string;
+  urlImagen: string;
+  fechaPublicacion: string;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\post.ts ===
+export interface Post {
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\reserva.ts ===
+export interface Reserva {
+  idReserva: number;
+
+  idUsuario: number;
+  nombreUsuario: string;
+
+  idSesion: number;
+  nombreServicio: string;
+
+  fechaReserva: string;
+  estado: string;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\sala.ts ===
+export interface Sala {
+  idSala: number;
+  nombre: string;
+  capacidad: number;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\servicio.ts ===
+export interface Servicio {
+  idServicio: number;
+  nombre: string;
+  descripcion: string;
+  categoria: string;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\sesion.ts ===
+import { Servicio } from './servicio';
+import { Usuario } from './usuario';
+import { Sala } from './sala';
+
+export interface Sesion {
+  idSesion: number;
+
+  idServicio: number;
+  nombreServicio: string;
+
+  idMonitor: number;
+  nombreMonitor: string;
+
+  idSala: number;
+  nombreSala: string;
+
+  fechaInicio: string;
+  fechaFin: string;
+
+  aforoMaximo: number;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\usuario-login.ts ===
+export interface UsuarioLogin {
+  email: string;
+  contrasena: string;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\usuario.ts ===
+export interface Usuario {
+  idUsuario: number;
+  nombre: string;
+  apellidos: string;
+  email: string;
+  activo: boolean;
+  rol: string;
+}
+
+=== C:\Users\aitor\Downloads\frontend\frontend\SPOTFIT\src\app\models\video.ts ===
+export interface Video {
+  idVideo: number;
+  titulo: string;
+  urlVideo: string;
+  categoria: string;
+}
+
+export const environment = {
+  apiUrl: 'http://localhost:8080'
+};
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+import { Routes } from '@angular/router';
+import { IndexComponent } from './pages/index/index';
+import { AdminComponent } from './pages/admin/admin';
+import { LoginComponent } from './pages/login/login';
+import { SignupComponent } from './pages/signup/signup';
+import { BookingComponent } from './pages/booking/booking';
+
+export const routes: Routes = [
+  { path: '', component: IndexComponent },          
+  { path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent },
+  {
+    path: 'admin/usuarios',
+    loadComponent: () => import('./pages/admin-usuarios/admin-usuarios').then(m => m.AdminUsuariosComponent)
+  },
+  {
+    path: 'admin/servicios',
+    loadComponent: () => import('./pages/admin-servicios/admin-servicios').then(m => m.AdminServiciosComponent)
+  },
+  {
+    path: 'admin/salas',
+    loadComponent: () => import('./pages/admin-salas/admin-salas').then(m => m.AdminSalasComponent)
+  },
+  {
+    path: 'admin/sesiones',
+    loadComponent: () => import('./pages/admin-sesiones/admin-sesiones').then(m => m.AdminSesionesComponent)
+  },
+  {
+    path: 'admin/reservas',
+    loadComponent: () => import('./pages/admin-reservas/admin-reservas').then(m => m.AdminReservasComponent)
+  },
+  {
+    path: 'admin/noticias',
+    loadComponent: () => import('./pages/admin-noticias/admin-noticias').then(m => m.AdminNoticiasComponent)
+  },
+  {
+    path: 'admin/videos',
+    loadComponent: () => import('./pages/admin-videos/admin-videos').then(m => m.AdminVideosComponent)
+  },
+  { path: 'login', component: LoginComponent },   
+  { path: 'signup', component: SignupComponent },    
+  {
+    path: 'booking',
+    loadComponent: () => import('./pages/booking/booking').then(m => m.BookingComponent)
+  },
+  {
+    path: 'fisioterapia',
+    loadComponent: () =>
+      import('./pages/fisioterapia/fisioterapia')
+        .then(m => m.FisioterapiaComponent)
+  },
+  {
+    path: 'nutricion',
+    loadComponent: () =>
+      import('./pages/nutricion/nutricion')
+        .then(m => m.NutricionComponent)
+  },
+  {
+    path: 'clasesdirigidas',
+    loadComponent: () =>
+      import('./pages/clasesdirigidas/clasesdirigidas')
+        .then(m => m.ClasesdirigidasComponent)
+  },
+  {
+    path: 'comunidad',
+    loadComponent: () =>
+      import('./pages/comunidad/comunidad')
+        .then(m => m.ComunidadComponent)
+  },
+  { path: '**', redirectTo: '' },           
+];

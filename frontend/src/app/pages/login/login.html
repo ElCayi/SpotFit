@@ -1,0 +1,43 @@
+<div class="login-wrapper">
+
+    <div class="logo-container">
+        <img src="logo definitivo.png" class="logo-img" alt="SpotFit Logo">
+        <div class="brand-name">SPOTFIT</div>
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input 
+                type="email" 
+                class="form-input" 
+                placeholder="your.email@example.com"
+                [(ngModel)]="email"
+                name="email"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input 
+                type="password" 
+                class="form-input" 
+                placeholder="******"
+                [(ngModel)]="password"
+                name="password"
+                required
+            />
+        </div>
+
+        <button class="submit-btn" type="submit">Sign In</button>
+
+        <p class="register-text">
+            Don't have an account?
+            <a routerLink="/signup">Register here</a>
+        </p>
+
+    </form>
+
+</div>

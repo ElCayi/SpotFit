@@ -1,0 +1,237 @@
+/* Reset general */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Fondo general */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 40px;
+  background-image: url("/gym.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+/* Layout */
+.booking-layout {
+  display: flex;
+  gap: 30px;
+}
+
+/* Sidebar */
+.booking-sidebar {
+  width: 220px;
+  padding: 20px;
+  background: rgba(10, 10, 10, 0.78);
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.8);
+  height: fit-content;
+}
+
+.sidebar-logo {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+}
+
+.nav-logout {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  background: #ff4f4f;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Main */
+.booking-main {
+  flex: 1;
+}
+
+/* Header */
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.booking-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.booking-header h1 {
+  font-size: 36px;
+  margin: 8px 0;
+  font-weight: 700;
+}
+
+.booking-subtitle {
+  opacity: 0.8;
+  font-size: 16px;
+}
+
+.booking-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.credits-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+  font-weight: 600;
+}
+
+/* Filtros */
+.booking-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-chip,
+.filter-tag {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.filter-chip-active,
+.filter-tag-active {
+  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+}
+
+.filter-date input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* Lista de clases */
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.class-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.8);
+  transition: 0.2s;
+}
+
+.class-card:hover {
+  transform: translateY(-2px);
+}
+
+.class-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.time-main {
+  color: #ff7ac4;
+}
+
+.class-main {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.class-title-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.class-type {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.class-room {
+  opacity: 0.7;
+}
+
+.class-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.btn-reservar {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+  color: #fff;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-reservar:hover {
+  filter: brightness(1.1);
+}

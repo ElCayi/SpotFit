@@ -1,0 +1,46 @@
+<div class="container">
+
+  <h2>Administrar Usuarios</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+    <input type="text" placeholder="Nombre" formControlName="nombre">
+    <input type="email" placeholder="Email" formControlName="email">
+    <input type="text" placeholder="Rol" formControlName="rol">
+
+    <button type="submit">
+      {{ editingId ? 'Actualizar' : 'Crear' }}
+    </button>
+
+    <button type="button" (click)="reset()">Cancelar</button>
+
+  </form>
+
+  <hr>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let u of usuarios">
+        <td>{{ u.idUsuario }}</td>
+        <td>{{ u.nombre }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.rol }}</td>
+        <td>
+          <button (click)="edit(u)">Editar</button>
+          <button (click)="delete(u.idUsuario!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
