@@ -9,7 +9,6 @@ import spotfit.modelo.entities.Video;
 import spotfit.modelo.service.VideoService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/videos")
 public class VideoRestController {
 
@@ -34,7 +33,7 @@ public class VideoRestController {
 
     // Métodos POST, PUT, DELETE siguen usando entidades
     
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addVideo(@RequestBody Video video) {
         return ResponseEntity.status(201).body(videoService.insertOne(video));
     }

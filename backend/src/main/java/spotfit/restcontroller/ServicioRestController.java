@@ -9,7 +9,6 @@ import spotfit.modelo.entities.Servicio;
 import spotfit.modelo.service.ServicioService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/servicios")
 public class ServicioRestController {
 
@@ -34,7 +33,7 @@ public class ServicioRestController {
 
     // Métodos POST, PUT, DELETE siguen usando entidades
     
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addServicio(@RequestBody Servicio servicio) {
         return ResponseEntity.status(201).body(servicioService.insertOne(servicio));
     }

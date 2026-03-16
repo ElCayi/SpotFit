@@ -10,7 +10,6 @@ import spotfit.modelo.entities.Sesion;
 import spotfit.modelo.service.SesionService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/sesiones")
 public class SesionRestController {
 
@@ -22,6 +21,11 @@ public class SesionRestController {
     @GetMapping("")
     public List<SesionDto> getAllSesiones() {
         return sesionService.findAllDtos();
+    }
+    
+    @GetMapping("/hoy")
+    public List<SesionDto> getSesionesHoy() {
+        return sesionService.findSesionesHoy();
     }
 
     @GetMapping("/{idSesion}")
@@ -35,7 +39,7 @@ public class SesionRestController {
     
   //Demas metodos
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addSesion(@RequestBody Sesion sesion) {
         return ResponseEntity.status(201).body(sesionService.insertOne(sesion));
     }

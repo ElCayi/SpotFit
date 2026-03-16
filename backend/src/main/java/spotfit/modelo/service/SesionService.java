@@ -9,4 +9,5 @@ public interface SesionService extends IntCrudGenerico<Sesion, Integer> {
 	// Limpiamos el flujo de datos (DTO)
     List<SesionDto> findAllDtos();
     SesionDto findDtoById(Integer id);
+    List<SesionDto> findSesionesHoy();
 }

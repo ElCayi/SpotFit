@@ -10,7 +10,6 @@ import spotfit.modelo.entities.Reserva;
 import spotfit.modelo.service.ReservaService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/reservas")
 public class ReservaRestController {
 
@@ -35,7 +34,7 @@ public class ReservaRestController {
     
   //Demas metodos
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addReserva(@RequestBody Reserva reserva) {
         return ResponseEntity.status(201).body(reservaService.insertOne(reserva));
     }

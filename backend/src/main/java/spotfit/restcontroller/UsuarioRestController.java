@@ -10,7 +10,6 @@ import spotfit.modelo.entities.Usuario;
 import spotfit.modelo.service.UsuarioService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/usuarios")
 public class UsuarioRestController {
 
@@ -35,7 +34,7 @@ public class UsuarioRestController {
     
     //Demas metodos
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) {
         return ResponseEntity.status(201).body(usuarioService.insertOne(usuario));
     }

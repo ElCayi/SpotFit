@@ -9,7 +9,6 @@ import spotfit.modelo.entities.Noticia;
 import spotfit.modelo.service.NoticiaService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/noticias")
 public class NoticiaRestController {
 

@@ -22,23 +22,21 @@ public class SesionDto {
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
     private int aforoMaximo;
+    private int reservasActuales;
 
     public static SesionDto convertirADto(Sesion sesion) {
         SesionDto dto = new SesionDto();
         dto.setIdSesion(sesion.getIdSesion());
-        // Extraemos datos del objeto Servicio
         dto.setIdServicio(sesion.getServicio().getIdServicio());
         dto.setNombreServicio(sesion.getServicio().getNombre());
-        // Extraemos datos del objeto Monitor (Usuario)
         dto.setIdMonitor(sesion.getMonitor().getIdUsuario());
         dto.setNombreMonitor(sesion.getMonitor().getNombre());
-        // Extraemos datos del objeto Sala
         dto.setIdSala(sesion.getSala().getIdSala());
         dto.setNombreSala(sesion.getSala().getNombre());
-        
         dto.setFechaInicio(sesion.getFechaInicio());
         dto.setFechaFin(sesion.getFechaFin());
         dto.setAforoMaximo(sesion.getAforoMaximo());
+        dto.setReservasActuales(0);
         return dto;
     }
 }

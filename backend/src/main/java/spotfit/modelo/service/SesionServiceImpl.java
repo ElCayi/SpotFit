@@ -86,13 +86,32 @@ public class SesionServiceImpl implements SesionService {
     public List<SesionDto> findAllDtos() {
         return sesionRepository.findAll()
                 .stream()
-                .map(sesion -> SesionDto.convertirADto(sesion))
+                .map(sesion -> {
+                    SesionDto dto = SesionDto.convertirADto(sesion);
+                    dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
+                    return dto;
+                })
                 .toList();
     }
 
-	@Override
-	public SesionDto findDtoById(Integer id) {
-	    Sesion sesion = sesionRepository.findById(id).orElse(null);
-	    return sesion != null ? SesionDto.convertirADto(sesion) : null;
-	}
+    @Override
+    public SesionDto findDtoById(Integer id) {
+        Sesion sesion = sesionRepository.findById(id).orElse(null);
+        if (sesion == null) return null;
+        SesionDto dto = SesionDto.convertirADto(sesion);
+        dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
+        return dto;
+    }
+	
+    @Override
+    public List<SesionDto> findSesionesHoy() {
+        return sesionRepository.findSesionesHoy()
+                .stream()
+                .map(sesion -> {
+                    SesionDto dto = SesionDto.convertirADto(sesion);
+                    dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
+                    return dto;
+                })
+                .toList();
+    }
 }
