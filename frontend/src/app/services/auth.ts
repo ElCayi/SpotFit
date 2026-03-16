@@ -1,10 +1,8 @@
-// src/app/services/auth.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { UsuarioLogin } from '../models/usuario-login';
-import { Usuario } from '../models/usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -15,28 +13,42 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(data: UsuarioLogin): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.baseUrl}/login`, data)
+  login(data: UsuarioLogin): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/login`, data)
       .pipe(
-        tap(usuario => this.guardarUsuario(usuario))
+        tap(response => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('usuario', JSON.stringify({
+            id: response.id,
+            nombre: response.nombre,
+            email: response.email,
+            rol: response.rol
+          }));
+        })
       );
   }
 
   logout(): void {
+    localStorage.removeItem('token');
     localStorage.removeItem('usuario');
   }
 
-  guardarUsuario(usuario: Usuario): void {
-    localStorage.setItem('usuario', JSON.stringify(usuario));
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
-  getUsuario(): Usuario | null {
+  getUsuario(): any {
     const usuario = localStorage.getItem('usuario');
     return usuario ? JSON.parse(usuario) : null;
   }
 
   isLogged(): boolean {
-    return !!this.getUsuario();
+    return !!this.getToken();
+  }
+
+  getRol(): string | null {
+    const usuario = this.getUsuario();
+    return usuario ? usuario.rol : null;
   }
 
   register(data: any): Observable<any> {

@@ -44,7 +44,7 @@ export class AdminComponent {
         // Adaptamos lo que venga del backend al formato de la tabla
         this.sesionesHoy = data.map(s => {
           const porcentaje = s.aforoMaximo
-            ? Math.round((s.ocupacionActual / s.aforoMaximo) * 100)
+            ? Math.round((s.reservasActuales / s.aforoMaximo) * 100)
             : 0;
 
           return {
@@ -52,7 +52,7 @@ export class AdminComponent {
             servicio: s.nombreServicio,
             monitor: s.nombreMonitor,
             sala: s.nombreSala,
-            ocupacion: s.ocupacionActual,
+            ocupacion: s.reservasActuales,
             aforo: s.aforoMaximo,
             porcentaje
           };
