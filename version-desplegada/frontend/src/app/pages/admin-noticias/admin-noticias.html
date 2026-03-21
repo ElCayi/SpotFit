@@ -1,0 +1,52 @@
+<div class="container">
+
+  <h2>Administrar Noticias</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+    <input type="text" placeholder="Título" formControlName="titulo">
+    <input type="text" placeholder="Contenido" formControlName="contenido">
+    
+    <input type="text" placeholder="URL de la imagen" formControlName="urlImagen">
+
+    <input type="date" formControlName="fechaPublicacion">
+
+    <button type="submit">
+      {{ editingId ? 'Actualizar' : 'Crear' }}
+    </button>
+
+    <button type="button" (click)="reset()">Cancelar</button>
+
+  </form>
+
+  <hr>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Contenido</th>
+        <th>Imagen</th> <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let n of noticias">
+        <td>{{ n.idNoticia }}</td>
+        <td>{{ n.titulo }}</td>
+        <td>{{ n.contenido }}</td>
+        <td>
+            <img [src]="n.urlImagen" alt="img" style="width: 50px; height: auto;">
+        </td>
+        <td>{{ n.fechaPublicacion }}</td>
+        <td>
+          <button (click)="edit(n)">Editar</button>
+          <button (click)="delete(n.idNoticia)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

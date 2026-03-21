@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>Administrar Videos</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+    <input type="text" placeholder="Título" formControlName="titulo">
+    
+    <input type="text" placeholder="URL del Video" formControlName="urlVideo">
+
+    <input type="text" placeholder="Categoría (Ej: Yoga, Fuerza)" formControlName="categoria">
+
+    <button type="submit">
+      {{ editingId ? 'Actualizar' : 'Crear' }}
+    </button>
+
+    <button type="button" (click)="reset()">Cancelar</button>
+  </form>
+
+  <hr>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Categoría</th> <th>URL</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let v of videos">
+        <td>{{ v.idVideo }}</td>
+        <td>{{ v.titulo }}</td>
+        <td>{{ v.categoria }}</td>
+        <td>
+          <a [href]="v.urlVideo" target="_blank">Ver Video</a>
+        </td>
+        <td>
+          <button (click)="edit(v)">Editar</button>
+          <button (click)="delete(v.idVideo!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

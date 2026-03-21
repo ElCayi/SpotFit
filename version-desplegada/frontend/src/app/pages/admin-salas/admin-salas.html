@@ -1,0 +1,43 @@
+<div class="container">
+
+  <h2>Administrar Salas</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+    <input type="text" placeholder="Nombre" formControlName="nombre">
+    <input type="number" placeholder="Capacidad" formControlName="capacidad">
+
+    <button type="submit">
+      {{ editingId ? 'Actualizar' : 'Crear' }}
+    </button>
+
+    <button type="button" (click)="reset()">Cancelar</button>
+
+  </form>
+
+  <hr>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Capacidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let s of salas">
+        <td>{{ s.idSala }}</td>
+        <td>{{ s.nombre }}</td>
+        <td>{{ s.capacidad }}</td>
+        <td>
+          <button (click)="edit(s)">Editar</button>
+          <button (click)="delete(s.idSala!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

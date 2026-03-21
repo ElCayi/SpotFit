@@ -1,0 +1,167 @@
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">SPOTFIT</div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin" class="nav-item active">
+        <img src="/videocam-outline.svg" class="nav-icon" alt="icono panel">
+        Panel de Control
+      </a>
+
+      <a routerLink="/admin/usuarios" class="nav-item">
+        <img src="/people-outline.svg" class="nav-icon" alt="icono usuarios">
+        Usuarios
+      </a>
+
+      <a routerLink="/admin/servicios" class="nav-item">
+        <img src="/briefcase-outline.svg" class="nav-icon" alt="icono servicios">
+        Servicios
+      </a>
+
+      <a routerLink="/admin/salas" class="nav-item">
+        <img src="/storefront-outline.svg" class="nav-icon" alt="icono salas">
+        Salas
+      </a>
+
+      <a routerLink="/admin/sesiones" class="nav-item">
+        <img src="/calendar-outline.svg" class="nav-icon" alt="icono agenda">
+        Agenda
+      </a>
+
+      <a routerLink="/admin/reservas" class="nav-item">
+        <img src="/list-outline.svg" class="nav-icon" alt="icono reservas">
+        Reservas
+      </a>
+
+      <a routerLink="/admin/noticias" class="nav-item">
+        <img src="/newspaper-outline.svg" class="nav-icon" alt="icono noticias">
+        Noticias
+      </a>
+
+      <a routerLink="/admin/videos" class="nav-item">
+        <img src="/videocam-outline.svg" class="nav-icon" alt="icono videos">
+        Videos
+      </a>
+    </nav>
+
+    <button class="nav-logout" (click)="logout()">Salir</button>
+  </aside>
+
+  <main class="admin-main">
+
+    <section class="admin-hero">
+      <div class="hero-text">
+        <p class="hero-kicker">Panel de administración</p>
+        <h1>¡Hola, {{ adminName }}!</h1>
+        <p class="hero-subtitle">
+          Gestiona tu gimnasio desde un único lugar: usuarios, servicios, salas y mucho más.
+        </p>
+      </div>
+      <div class="hero-illustration">
+        <img src="/admin.png" alt="Admin Spotfit" />
+      </div>
+    </section>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <h2>Acciones rápidas</h2>
+        <p>Accede directamente a las áreas clave de gestión.</p>
+      </div>
+
+      <div class="quick-actions-grid">
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/people-outline.svg" alt="">
+          </div>
+          <h3>Gestionar Usuarios</h3>
+          <p>Clientes & monitores</p>
+          <button class="btn-link" routerLink="/admin/usuarios">Acceso</button>
+        </article>
+
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/briefcase-outline.svg" alt="">
+          </div>
+          <h3>Gestionar Servicios</h3>
+          <p>Clases & fisioterapia</p>
+          <button class="btn-link" routerLink="/admin/servicios">Acceso</button>
+        </article>
+
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/storefront-outline.svg" alt="">
+          </div>
+          <h3>Gestionar Salas</h3>
+          <p>Espacios & capacidad</p>
+          <button class="btn-link" routerLink="/admin/salas">Acceso</button>
+        </article>
+
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/calendar-outline.svg" alt="">
+          </div>
+          <h3>Agenda de Sesiones</h3>
+          <p>Programar clases</p>
+          <button class="btn-link" routerLink="/admin/sesiones">Acceso</button>
+        </article>
+
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/newspaper-outline.svg" alt="">
+          </div>
+          <h3>Centro de Noticias</h3>
+          <p>Publicar novedades</p>
+          <button class="btn-link" routerLink="/admin/noticias">Acceso</button>
+        </article>
+
+        <article class="quick-card">
+          <div class="quick-icon icon-usuarios">
+            <img src="/videocam-outline.svg" alt="">
+          </div>
+          <h3>Biblioteca Fitness</h3>
+          <p>Subir videos</p>
+          <button class="btn-link" routerLink="/admin/videos">Acceso</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <h2>Sesiones de hoy · Live status</h2>
+        <p>Revisa el estado de ocupación de las sesiones en tiempo real.</p>
+      </div>
+
+      <div class="table-card">
+        <table class="sessions-table">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Servicio</th>
+              <th>Monitor</th>
+              <th>Sala</th>
+              <th>Aforo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sesion of sesionesHoy">
+              <td>{{ sesion.hora }}</td>
+              <td>{{ sesion.servicio }}</td>
+              <td>{{ sesion.monitor }}</td>
+              <td>{{ sesion.sala }}</td>
+              <td>
+                <div class="aforo-cell">
+                  <span>{{ sesion.ocupacion }}/{{ sesion.aforo }} · {{ sesion.porcentaje }}%</span>
+                  <div class="aforo-bar">
+                    <div class="aforo-fill" [style.width.%]="sesion.porcentaje"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
