@@ -9,6 +9,9 @@ import spotfit.modelo.dto.ReservaDto;
 import spotfit.modelo.entities.Reserva;
 import spotfit.modelo.service.ReservaService;
 
+import java.util.Map;
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/reservas")
 public class ReservaRestController {
@@ -36,7 +39,14 @@ public class ReservaRestController {
 
     @PostMapping("")
     public ResponseEntity<?> addReserva(@RequestBody Reserva reserva) {
-        return ResponseEntity.status(201).body(reservaService.insertOne(reserva));
+        Reserva guardada = reservaService.insertOne(reserva);
+        if (guardada != null) {
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("mensaje", "Reserva creada correctamente");
+            resp.put("idReserva", guardada.getIdReserva());
+            return ResponseEntity.status(201).body(resp);
+        }
+        return ResponseEntity.status(400).body("No hay plazas disponibles");
     }
 
     @PutMapping("/{idReserva}")

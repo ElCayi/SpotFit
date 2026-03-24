@@ -20,6 +20,7 @@ export class AdminNoticiasComponent implements OnInit {
   constructor(private service: NoticiaService, private fb: FormBuilder) {}
 
   ngOnInit() {
+    // Definimos el formulario con los nombres exactos que espera el Backend
     this.form = this.fb.group({
       titulo:    ['', Validators.required],
       contenido: ['', Validators.required],

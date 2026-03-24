@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import spotfit.modelo.entities.Sesion;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SesionRepository extends JpaRepository<Sesion, Integer> {
@@ -16,4 +18,7 @@ public interface SesionRepository extends JpaRepository<Sesion, Integer> {
     
     @Query("SELECT COUNT(r) FROM Reserva r WHERE r.sesion.idSesion = :idSesion AND r.estado = 'CONFIRMADA'")
     int countReservasConfirmadas(@Param("idSesion") int idSesion);
+    
+    //Buscar sesiones entre dos fechas
+    List<Sesion> findByFechaInicioBetween(LocalDateTime inicio, LocalDateTime fin);
 }

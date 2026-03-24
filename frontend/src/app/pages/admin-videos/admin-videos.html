@@ -1,5 +1,4 @@
 <div class="container">
-
   <h2>Administrar Videos</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
@@ -71,6 +70,7 @@
       <tr *ngFor="let v of videos">
         <td>{{ v.idVideo }}</td>
         <td>{{ v.titulo }}</td>
+        <td>{{ v.categoria }}</td>
         <td>
           <span class="badge">{{ v.categoria }}</span>
         </td>
@@ -86,5 +86,4 @@
       </tr>
     </tbody>
   </table>
-
 </div>

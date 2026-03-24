@@ -24,7 +24,6 @@ type CitasTab = 'disponibles' | 'reservadas';
   styleUrls: ['./booking.css']
 })
 export class BookingComponent implements OnInit {
-
   sesiones: Sesion[] = [];
   reservas: Reserva[] = [];
   noticias: Noticia[] = [];
@@ -39,8 +38,6 @@ export class BookingComponent implements OnInit {
   selectedCitaType: 'TODAS' | 'FISIOTERAPIA' | 'NUTRICION' = 'TODAS';
   dateFrom: string | null = null;
   dateTo: string | null = null;
-
-  // créditos de ejemplo
   creditos = 4;
 
   constructor(
@@ -61,12 +58,8 @@ export class BookingComponent implements OnInit {
 
   cargarSesiones(): void {
     this.sesionService.getAll().subscribe({
-      next: data => {
-        this.sesiones = data;
-      },
-      error: err => {
-        console.error('Error cargando sesiones', err);
-      }
+      next: data => { this.sesiones = data; },
+      error: err => { console.error('Error cargando sesiones', err); }
     });
   }
 
@@ -175,31 +168,21 @@ export class BookingComponent implements OnInit {
 
   private filtrarPorDia(sesion: Sesion): boolean {
     if (!this.selectedDay) return true;
-
     const hoy = new Date();
     const fechaSesion = new Date(sesion.fechaInicio);
-
-    if (this.selectedDay === 'hoy') {
-      return fechaSesion.toDateString() === hoy.toDateString();
-    }
-
+    if (this.selectedDay === 'hoy') return fechaSesion.toDateString() === hoy.toDateString();
     if (this.selectedDay === 'manana') {
       const manana = new Date();
       manana.setDate(hoy.getDate() + 1);
       return fechaSesion.toDateString() === manana.toDateString();
     }
-
     return true;
   }
 
   private filtrarPorRangoFecha(sesion: Sesion): boolean {
     if (!this.dateFrom && !this.dateTo) return true;
-
     const fecha = new Date(sesion.fechaInicio);
-    if (this.dateFrom) {
-      const from = new Date(this.dateFrom);
-      if (fecha < from) return false;
-    }
+    if (this.dateFrom && fecha < new Date(this.dateFrom)) return false;
     if (this.dateTo) {
       const to = new Date(this.dateTo);
       to.setHours(23, 59, 59, 999);
@@ -210,19 +193,10 @@ export class BookingComponent implements OnInit {
 
   private filtrarPorCategoria(sesion: Sesion): boolean {
     if (this.selectedCategory === 'TODAS') return true;
-
     const nombre = (sesion.nombreServicio || '').toLowerCase();
-
-    if (this.selectedCategory === 'YOGA') {
-      return nombre.includes('yoga');
-    }
-    if (this.selectedCategory === 'BODY') {
-      return nombre.includes('body');
-    }
-    if (this.selectedCategory === 'CICLO') {
-      return nombre.includes('ciclo');
-    }
-
+    if (this.selectedCategory === 'YOGA') return nombre.includes('yoga');
+    if (this.selectedCategory === 'BODY') return nombre.includes('body');
+    if (this.selectedCategory === 'CICLO') return nombre.includes('ciclo');
     return true;
   }
 
@@ -276,9 +250,8 @@ export class BookingComponent implements OnInit {
     this.selectedDay = day;
   }
 
-  setCategory(cat: 'TODAS' | 'YOGA' | 'BODY' | 'CICLO'): void {
-    this.selectedCategory = cat;
-  }
+  setDayFilter(day: 'hoy' | 'manana'): void { this.selectedDay = day; }
+  setCategory(cat: 'TODAS' | 'YOGA' | 'BODY' | 'CICLO'): void { this.selectedCategory = cat; }
 
   setCitaType(type: 'TODAS' | 'FISIOTERAPIA' | 'NUTRICION'): void {
     this.selectedCitaType = type;
@@ -287,8 +260,7 @@ export class BookingComponent implements OnInit {
   getDuracionMinutos(sesion: Sesion): number {
     const inicio = new Date(sesion.fechaInicio).getTime();
     const fin = new Date(sesion.fechaFin).getTime();
-    const diffMs = fin - inicio;
-    return Math.max(0, Math.round(diffMs / 60000));
+    return Math.max(0, Math.round((fin - inicio) / 60000));
   }
 
   reservar(sesion: Sesion): void {

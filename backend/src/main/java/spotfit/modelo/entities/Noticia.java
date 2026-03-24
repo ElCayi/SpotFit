@@ -30,6 +30,6 @@ public class Noticia {
 	@Column(name="url_imagen")
 	private String urlImagen;
 	
-	@Column(name="fecha_publicacion")
+	@Column(name="fecha_publicacion", insertable = false, updatable = false)
 	private LocalDateTime fechaPublicacion;
 }

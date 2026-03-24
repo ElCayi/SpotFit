@@ -2,6 +2,7 @@ package spotfit.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,12 +32,34 @@ public class SecurityConfig {
             .sessionManagement(ses -> ses.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-            	    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-            	    .requestMatchers("/", "/login", "/register", "/noticias/**", "/videos/**").permitAll()
-            	    .requestMatchers("/usuarios/**", "/salas/**", "/servicios/**").hasAuthority("ROLE_ADMIN")
-            	    .requestMatchers(org.springframework.http.HttpMethod.GET, "/sesiones/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MONITOR", "ROLE_CLIENTE")
-            	    .requestMatchers("/sesiones/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MONITOR")
-            	    .requestMatchers("/reservas/**").hasAuthority("ROLE_CLIENTE")
+
+            	    // ── Preflight CORS ──
+            	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+            	    // ── Rutas públicas ──
+            	    .requestMatchers("/", "/login", "/error").permitAll()
+
+            	    // ── Noticias: lectura autenticada, gestión solo ADMIN ──
+            	    .requestMatchers(HttpMethod.GET, "/noticias", "/noticias/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MONITOR", "ROLE_CLIENTE")
+            	    .requestMatchers("/noticias", "/noticias/**").hasAuthority("ROLE_ADMIN")
+
+            	    // ── Videos: lectura autenticada, gestión solo ADMIN ──
+            	    .requestMatchers(HttpMethod.GET, "/videos", "/videos/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MONITOR", "ROLE_CLIENTE")
+            	    .requestMatchers("/videos", "/videos/**").hasAuthority("ROLE_ADMIN")
+
+            	    // ── Administración: solo ADMIN ──
+            	    .requestMatchers("/usuarios", "/usuarios/**").hasAuthority("ROLE_ADMIN")
+            	    .requestMatchers("/salas", "/salas/**").hasAuthority("ROLE_ADMIN")
+            	    .requestMatchers("/servicios", "/servicios/**").hasAuthority("ROLE_ADMIN")
+
+            	    // ── Sesiones: lectura para los 3 roles, gestión ADMIN ──
+            	    .requestMatchers(HttpMethod.GET, "/sesiones", "/sesiones/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MONITOR", "ROLE_CLIENTE")
+            	    .requestMatchers("/sesiones", "/sesiones/**").hasAuthority("ROLE_ADMIN")
+
+            	    // ── Reservas: ADMIN + CLIENTE ──
+            	    .requestMatchers("/reservas", "/reservas/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CLIENTE")
+
+            	    // ── Todo lo demás requiere autenticación ──
             	    .anyRequest().authenticated()
             	)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -46,13 +71,13 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(java.util.List.of(
+        config.setAllowedOrigins(List.of(
             "https://aitorserrano.com",
             "https://www.aitorserrano.com",
             "http://localhost:4200"
         ));
-        config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(java.util.List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

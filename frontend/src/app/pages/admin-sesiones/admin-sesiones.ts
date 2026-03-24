@@ -113,6 +113,7 @@ export class AdminSesionesComponent implements OnInit {
       });
     }
   }
+}
 
   edit(sesion: Sesion) {
     this.editingId = sesion.idSesion;
@@ -130,6 +131,7 @@ export class AdminSesionesComponent implements OnInit {
       fechaFin:    finCorto
     });
   }
+}
 
   delete(id: number) {
     if (!confirm('¿Eliminar esta sesión?')) return;

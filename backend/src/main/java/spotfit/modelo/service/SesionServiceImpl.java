@@ -68,8 +68,6 @@ public class SesionServiceImpl implements SesionService {
             return 0;
         }
     }
-    
-  //Metodos que nos devuelven DTOs
 
     @Override
     public SesionDto findDtoById(Integer id) {
@@ -99,13 +97,13 @@ public class SesionServiceImpl implements SesionService {
 	
     @Override
     public List<SesionDto> findSesionesHoy() {
-        return sesionRepository.findSesionesHoy()
+        LocalDate hoy = LocalDate.now();
+        LocalDateTime inicioHoy = hoy.atStartOfDay();
+        LocalDateTime finHoy = hoy.atTime(23, 59, 59);
+        
+        return sesionRepository.findByFechaInicioBetween(inicioHoy, finHoy)
                 .stream()
-                .map(sesion -> {
-                    SesionDto dto = SesionDto.convertirADto(sesion);
-                    dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
-                    return dto;
-                })
+                .map(SesionDto::convertirADto)
                 .toList();
     }
 }
