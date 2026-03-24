@@ -4,38 +4,44 @@ import { AdminComponent } from './pages/admin/admin';
 import { LoginComponent } from './pages/login/login';
 import { SignupComponent } from './pages/signup/signup';
 import { BookingComponent } from './pages/booking/booking';
+import { adminRoleGuard } from './guards/admin-role.guard';
 
 export const routes: Routes = [
   { path: '', component: IndexComponent },          
-  { path: 'admin', component: AdminComponent },
-  { path: 'admin', component: AdminComponent },
   {
-    path: 'admin/usuarios',
-    loadComponent: () => import('./pages/admin-usuarios/admin-usuarios').then(m => m.AdminUsuariosComponent)
-  },
-  {
-    path: 'admin/servicios',
-    loadComponent: () => import('./pages/admin-servicios/admin-servicios').then(m => m.AdminServiciosComponent)
-  },
-  {
-    path: 'admin/salas',
-    loadComponent: () => import('./pages/admin-salas/admin-salas').then(m => m.AdminSalasComponent)
-  },
-  {
-    path: 'admin/sesiones',
-    loadComponent: () => import('./pages/admin-sesiones/admin-sesiones').then(m => m.AdminSesionesComponent)
-  },
-  {
-    path: 'admin/reservas',
-    loadComponent: () => import('./pages/admin-reservas/admin-reservas').then(m => m.AdminReservasComponent)
-  },
-  {
-    path: 'admin/noticias',
-    loadComponent: () => import('./pages/admin-noticias/admin-noticias').then(m => m.AdminNoticiasComponent)
-  },
-  {
-    path: 'admin/videos',
-    loadComponent: () => import('./pages/admin-videos/admin-videos').then(m => m.AdminVideosComponent)
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [adminRoleGuard],
+    children: [
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./pages/admin-usuarios/admin-usuarios').then(m => m.AdminUsuariosComponent)
+      },
+      {
+        path: 'servicios',
+        loadComponent: () => import('./pages/admin-servicios/admin-servicios').then(m => m.AdminServiciosComponent)
+      },
+      {
+        path: 'salas',
+        loadComponent: () => import('./pages/admin-salas/admin-salas').then(m => m.AdminSalasComponent)
+      },
+      {
+        path: 'sesiones',
+        loadComponent: () => import('./pages/admin-sesiones/admin-sesiones').then(m => m.AdminSesionesComponent)
+      },
+      {
+        path: 'reservas',
+        loadComponent: () => import('./pages/admin-reservas/admin-reservas').then(m => m.AdminReservasComponent)
+      },
+      {
+        path: 'noticias',
+        loadComponent: () => import('./pages/admin-noticias/admin-noticias').then(m => m.AdminNoticiasComponent)
+      },
+      {
+        path: 'videos',
+        loadComponent: () => import('./pages/admin-videos/admin-videos').then(m => m.AdminVideosComponent)
+      }
+    ]
   },
   { path: 'login', component: LoginComponent },   
   { path: 'signup', component: SignupComponent },    

@@ -1,49 +1,69 @@
 <div class="booking-layout">
-
-  <!-- Sidebar -->
   <aside class="booking-sidebar">
     <div class="sidebar-logo">SPOTFIT</div>
 
     <nav class="sidebar-nav">
-      <a routerLink="/admin" class="nav-item">Panel de Control</a>
-      <a routerLink="/booking" class="nav-item active">Reservas</a>
-      <a routerLink="/admin-usuarios" class="nav-item">Usuario</a>
-      <a routerLink="/admin-servicios" class="nav-item">Servicios</a>
-      <a routerLink="/admin-salas" class="nav-item">Salas</a>
+      <button type="button" class="nav-item" [class.active]="activeSection === 'reservas'" (click)="setSection('reservas')">Reservas</button>
+      <button type="button" class="nav-item" [class.active]="activeSection === 'citas'" (click)="setSection('citas')">Citas</button>
+      <button type="button" class="nav-item" [class.active]="activeSection === 'noticias'" (click)="setSection('noticias')">Noticias</button>
+      <button type="button" class="nav-item" [class.active]="activeSection === 'videos'" (click)="setSection('videos')">Videos</button>
     </nav>
 
-    <button class="nav-logout">
+    <button class="nav-logout" (click)="logout()">
       Salir
     </button>
   </aside>
 
-  <!-- Main -->
   <main class="booking-main">
-
-    <!-- Top bar -->
     <header class="booking-header">
       <div class="booking-title-block">
-        <p class="booking-kicker">Reservas</p>
-        <h1>Clases dirigidas</h1>
-        <p class="booking-subtitle">
-          Reserva tus clases para hoy y los próximos días.
-        </p>
-      </div>
-
-      <div class="booking-top-actions">
-        <button class="top-link">Comunidad</button>
-        <button class="top-link">Mi perfil</button>
-        <div class="credits-pill">
-          {{ creditos }} créditos
-        </div>
+        <p class="booking-kicker">Zona de usuario</p>
+        <h1>{{ headerTitle }}</h1>
+        <p class="booking-subtitle">{{ headerSubtitle }}</p>
       </div>
     </header>
 
-    <!-- Filtros -->
-    <section class="booking-filters">
+    <section class="booking-filters" *ngIf="activeSection === 'reservas' || activeSection === 'citas'">
+      <div class="filter-group" *ngIf="activeSection === 'reservas'">
+        <button
+          class="filter-chip"
+          [class.filter-chip-active]="activeReservasTab === 'disponibles'"
+          (click)="setReservasTab('disponibles')">
+          Clases disponibles
+        </button>
 
-      <!-- Filtro rápido: hoy / mañana -->
+        <button
+          class="filter-chip"
+          [class.filter-chip-active]="activeReservasTab === 'reservadas'"
+          (click)="setReservasTab('reservadas')">
+          Ya reservadas
+        </button>
+      </div>
+
+      <div class="filter-group" *ngIf="activeSection === 'citas'">
+        <button
+          class="filter-chip"
+          [class.filter-chip-active]="activeCitasTab === 'disponibles'"
+          (click)="setCitasTab('disponibles')">
+          Citas disponibles
+        </button>
+
+        <button
+          class="filter-chip"
+          [class.filter-chip-active]="activeCitasTab === 'reservadas'"
+          (click)="setCitasTab('reservadas')">
+          Ya reservadas
+        </button>
+      </div>
+
       <div class="filter-group">
+        <button
+          class="filter-chip"
+          [class.filter-chip-active]="selectedDay === null"
+          (click)="setDayFilter(null)">
+          Todas
+        </button>
+
         <button
           class="filter-chip"
           [class.filter-chip-active]="selectedDay === 'hoy'"
@@ -59,18 +79,16 @@
         </button>
       </div>
 
-      <!-- Rango de fecha -->
       <div class="filter-group">
         <label class="filter-label">Rango de fecha</label>
         <div class="filter-date">
           <input type="date" [(ngModel)]="dateFrom">
-          <span class="date-separator">—</span>
+          <span class="date-separator">-</span>
           <input type="date" [(ngModel)]="dateTo">
         </div>
       </div>
 
-      <!-- Filtro por tipo de servicio -->
-      <div class="filter-group filter-group-right">
+      <div class="filter-group filter-group-right" *ngIf="activeSection === 'reservas'">
         <button
           class="filter-tag"
           [class.filter-tag-active]="selectedCategory === 'TODAS'"
@@ -100,21 +118,39 @@
         </button>
       </div>
 
+      <div class="filter-group filter-group-right" *ngIf="activeSection === 'citas'">
+        <button
+          class="filter-tag"
+          [class.filter-tag-active]="selectedCitaType === 'TODAS'"
+          (click)="setCitaType('TODAS')">
+          Todas
+        </button>
+
+        <button
+          class="filter-tag"
+          [class.filter-tag-active]="selectedCitaType === 'FISIOTERAPIA'"
+          (click)="setCitaType('FISIOTERAPIA')">
+          Fisioterapia
+        </button>
+
+        <button
+          class="filter-tag"
+          [class.filter-tag-active]="selectedCitaType === 'NUTRICION'"
+          (click)="setCitaType('NUTRICION')">
+          Nutricion
+        </button>
+      </div>
     </section>
 
-    <!-- Lista de clases -->
-    <section class="booking-list">
-
+    <section class="booking-list" *ngIf="activeSection === 'reservas' && activeReservasTab === 'disponibles'">
       <article
         class="class-card"
-        *ngFor="let sesion of sesionesFiltradas">
-
-        <!-- Hora -->
+        *ngFor="let sesion of clasesFiltradas">
         <div class="class-time">
           <span class="time-main">
             {{ sesion.fechaInicio | date:'HH:mm' }}
           </span>
-          <span class="time-separator">–</span>
+          <span class="time-separator">-</span>
           <span class="time-main">
             {{ sesion.fechaFin | date:'HH:mm' }}
           </span>
@@ -123,10 +159,8 @@
           </span>
         </div>
 
-        <!-- Info clase -->
         <div class="class-main">
           <div class="class-info">
-
             <div class="class-title-row">
               <span class="class-type">
                 {{ sesion.nombreServicio }}
@@ -140,16 +174,13 @@
             <p class="class-instructor">
               Instructor: {{ sesion.nombreMonitor }}
             </p>
-
           </div>
         </div>
 
-        <!-- Estado + botón reservar -->
         <div class="class-status">
-
           <div class="spots">
             <span class="spots-main">
-              Aforo máximo: {{ sesion.aforoMaximo }}
+              Aforo maximo: {{ sesion.aforoMaximo }}
             </span>
           </div>
 
@@ -158,17 +189,207 @@
             (click)="reservar(sesion)">
             Reservar
           </button>
-
         </div>
-
       </article>
 
-      <p *ngIf="sesionesFiltradas.length === 0">
-        No hay sesiones que coincidan con los filtros seleccionados.
+      <p *ngIf="clasesFiltradas.length === 0">
+        No hay clases que coincidan con los filtros seleccionados.
       </p>
-
     </section>
 
-  </main>
+    <section class="booking-list" *ngIf="activeSection === 'reservas' && activeReservasTab === 'reservadas'">
+      <article
+        class="class-card"
+        *ngFor="let reserva of misReservasDeClases">
+        <div class="class-time">
+          <span class="time-main">
+            {{ reserva.fechaReserva | date:'dd/MM' }}
+          </span>
+        </div>
 
+        <div class="class-main">
+          <div class="class-info">
+            <div class="class-title-row">
+              <span class="class-type">
+                {{ reserva.nombreServicio }}
+              </span>
+
+              <span class="class-room">
+                {{ reserva.estado }}
+              </span>
+            </div>
+
+            <p class="class-instructor">
+              Reserva realizada el {{ reserva.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="class-status">
+          <div class="spots">
+            <span class="spots-main">
+              Sesion #{{ reserva.idSesion }}
+            </span>
+          </div>
+
+          <button
+            class="btn-cancelar"
+            (click)="cancelarReserva(reserva)">
+            Cancelar
+          </button>
+        </div>
+      </article>
+
+      <p *ngIf="misReservasDeClases.length === 0">
+        Aun no tienes clases reservadas.
+      </p>
+    </section>
+
+    <section class="booking-list" *ngIf="activeSection === 'citas' && activeCitasTab === 'disponibles'">
+      <article
+        class="class-card"
+        *ngFor="let sesion of citasFiltradas">
+        <div class="class-time">
+          <span class="time-main">
+            {{ sesion.fechaInicio | date:'HH:mm' }}
+          </span>
+          <span class="time-separator">-</span>
+          <span class="time-main">
+            {{ sesion.fechaFin | date:'HH:mm' }}
+          </span>
+          <span class="time-duration">
+            {{ getDuracionMinutos(sesion) }} min
+          </span>
+        </div>
+
+        <div class="class-main">
+          <div class="class-info">
+            <div class="class-title-row">
+              <span class="class-type">
+                {{ sesion.nombreServicio }}
+              </span>
+
+              <span class="class-room">
+                {{ sesion.nombreSala }}
+              </span>
+            </div>
+
+            <p class="class-instructor">
+              Instructor: {{ sesion.nombreMonitor }}
+            </p>
+          </div>
+        </div>
+
+        <div class="class-status">
+          <div class="spots">
+            <span class="spots-main">
+              Aforo maximo: {{ sesion.aforoMaximo }}
+            </span>
+          </div>
+
+          <button
+            class="btn-reservar"
+            (click)="reservar(sesion)">
+            Reservar cita
+          </button>
+        </div>
+      </article>
+
+      <p *ngIf="citasFiltradas.length === 0">
+        No hay citas que coincidan con los filtros seleccionados.
+      </p>
+    </section>
+
+    <section class="booking-list" *ngIf="activeSection === 'citas' && activeCitasTab === 'reservadas'">
+      <article
+        class="class-card"
+        *ngFor="let reserva of misReservasDeCitas">
+        <div class="class-time">
+          <span class="time-main">
+            {{ reserva.fechaReserva | date:'dd/MM' }}
+          </span>
+        </div>
+
+        <div class="class-main">
+          <div class="class-info">
+            <div class="class-title-row">
+              <span class="class-type">
+                {{ reserva.nombreServicio }}
+              </span>
+
+              <span class="class-room">
+                {{ reserva.estado }}
+              </span>
+            </div>
+
+            <p class="class-instructor">
+              Reserva realizada el {{ reserva.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="class-status">
+          <div class="spots">
+            <span class="spots-main">
+              Sesion #{{ reserva.idSesion }}
+            </span>
+          </div>
+
+          <button
+            class="btn-cancelar"
+            (click)="cancelarReserva(reserva)">
+            Cancelar
+          </button>
+        </div>
+      </article>
+
+      <p *ngIf="misReservasDeCitas.length === 0">
+        Aun no tienes citas reservadas.
+      </p>
+    </section>
+
+    <section class="content-grid" *ngIf="activeSection === 'noticias'">
+      <article class="content-card content-card-news" *ngFor="let noticia of noticias">
+        <img
+          *ngIf="noticia.urlImagen"
+          class="content-image"
+          [src]="noticia.urlImagen"
+          [alt]="noticia.titulo">
+
+        <div class="content-body">
+          <p class="content-meta">
+            {{ noticia.fechaPublicacion | date:'dd/MM/yyyy' }}
+          </p>
+          <h2>{{ noticia.titulo }}</h2>
+          <p>
+            {{ noticia.contenido | slice:0:220 }}<span *ngIf="noticia.contenido.length > 220">...</span>
+          </p>
+        </div>
+      </article>
+
+      <p *ngIf="noticias.length === 0">
+        No hay noticias disponibles ahora mismo.
+      </p>
+    </section>
+
+    <section class="content-grid" *ngIf="activeSection === 'videos'">
+      <article class="content-card" *ngFor="let video of videos">
+        <div class="content-body">
+          <p class="content-meta">{{ video.categoria }}</p>
+          <h2>{{ video.titulo }}</h2>
+          <a
+            class="content-link"
+            [href]="video.urlVideo"
+            target="_blank"
+            rel="noopener noreferrer">
+            Ver video
+          </a>
+        </div>
+      </article>
+
+      <p *ngIf="videos.length === 0">
+        No hay videos disponibles ahora mismo.
+      </p>
+    </section>
+  </main>
 </div>
