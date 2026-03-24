@@ -4,27 +4,58 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
-    <input type="text" placeholder="Nombre" formControlName="nombre">
-    <input type="text" placeholder="Descripción" formControlName="descripcion">
-    <input type="number" placeholder="Duración (min)" formControlName="duracion">
+    <!-- Nombre -->
+    <div class="form-field">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" placeholder="Ej: Body & Shape" formControlName="nombre">
+      <span class="error-msg"
+            *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+        Obligatorio
+      </span>
+    </div>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
+    <!-- Descripción -->
+    <div class="form-field">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" rows="3" placeholder="Describe en qué consiste el servicio" formControlName="descripcion"></textarea>
+      <span class="error-msg"
+            *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+        Obligatorio
+      </span>
+    </div>
 
-    <button type="button" (click)="reset()">Cancelar</button>
+    <!-- Categoría -->
+    <div class="form-field">
+      <label for="categoria">Categoría</label>
+      <select id="categoria" formControlName="categoria">
+        <option value="CLASE">Clase grupal (aforo 15)</option>
+        <option value="SALUD">Salud individual (aforo 1)</option>
+      </select>
+      <span class="categoria-hint">
+        La categoría determina el aforo automático de las sesiones que se creen con este servicio.
+      </span>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
         <th>ID</th>
         <th>Nombre</th>
         <th>Descripción</th>
-        <th>Duración</th>
+        <th>Categoría</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -35,8 +66,15 @@
         <td>{{ s.nombre }}</td>
         <td>{{ s.descripcion }}</td>
         <td>
+          <span class="badge"
+                [class.badge-clase]="s.categoria === 'CLASE'"
+                [class.badge-salud]="s.categoria === 'SALUD'">
+            {{ getCategoriaLabel(s.categoria) }}
+          </span>
+        </td>
+        <td>
           <button (click)="edit(s)">Editar</button>
-          <button (click)="delete(s.idServicio!)">Eliminar</button>
+          <button (click)="delete(s.idServicio)">Eliminar</button>
         </td>
       </tr>
     </tbody>

@@ -1,47 +1,81 @@
 <div class="container">
-  <h2>Administrar Reservas</h2>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
-    <input type="number" placeholder="ID Usuario" formControlName="usuarioId">
-    <input type="number" placeholder="ID Sesión" formControlName="sesionId">
-    
-    <input type="datetime-local" formControlName="fechaReserva">
-    <input type="text" placeholder="Estado (Ej: CONFIRMADA)" formControlName="estado">
+  <h2>Gestión de Reservas</h2>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
+  <!-- Resumen rápido -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-number">{{ reservas.length }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card stat-confirmada">
+      <span class="stat-number">{{ totalConfirmadas }}</span>
+      <span class="stat-label">Confirmadas</span>
+    </div>
+    <div class="stat-card stat-cancelada">
+      <span class="stat-number">{{ totalCanceladas }}</span>
+      <span class="stat-label">Canceladas</span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <button [class.filtro-activo]="filtro === 'TODAS'" (click)="setFiltro('TODAS')">
+      Todas
     </button>
-    <button type="button" (click)="reset()">Cancelar</button>
-  </form>
+    <button [class.filtro-activo]="filtro === 'CONFIRMADA'" (click)="setFiltro('CONFIRMADA')">
+      Confirmadas
+    </button>
+    <button [class.filtro-activo]="filtro === 'CANCELADA'" (click)="setFiltro('CANCELADA')">
+      Canceladas
+    </button>
+  </div>
 
-  <hr>
-
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
         <th>ID</th>
-        <th>Usuario</th>
-        <th>Clase (Sesión)</th>
-        <th>Fecha y Hora</th>
+        <th>Cliente</th>
+        <th>Servicio</th>
+        <th>Fecha reserva</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let r of reservas">
+      <tr *ngFor="let r of reservasFiltradas">
         <td>{{ r.idReserva }}</td>
-        
-        <td>{{ r.usuario?.nombre || 'ID: ' + r.usuario?.idUsuario }}</td>
-        <td>{{ r.sesion?.servicio?.nombre || 'ID: ' + r.sesion?.idSesion }}</td>
-        
+        <td>{{ r.nombreUsuario }}</td>
+        <td>{{ r.nombreServicio }}</td>
         <td>{{ r.fechaReserva | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ r.estado }}</td>
         <td>
-          <button (click)="edit(r)">Editar</button>
-          <button (click)="delete(r.idReserva!)">Eliminar</button>
+          <span class="badge"
+                [class.badge-confirmada]="r.estado === 'CONFIRMADA'"
+                [class.badge-cancelada]="r.estado === 'CANCELADA'">
+            {{ r.estado }}
+          </span>
+        </td>
+        <td class="actions-cell">
+          <button
+            class="btn-cancelar"
+            *ngIf="r.estado === 'CONFIRMADA'"
+            (click)="cancelar(r)">
+            Cancelar
+          </button>
+          <button
+            class="btn-eliminar"
+            (click)="eliminar(r.idReserva)">
+            Eliminar
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <p class="empty-msg" *ngIf="reservasFiltradas.length === 0">
+    No hay reservas que coincidan con el filtro seleccionado.
+  </p>
+
 </div>

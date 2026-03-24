@@ -38,6 +38,10 @@ export class AdminComponent {
     this.cargarSesionesHoy();
   }
 
+  tieneSeccionActiva(): boolean {
+    return this.router.url.startsWith('/admin/');
+  }
+
   cargarSesionesHoy() {
     this.sesionService.getSesionesHoy().subscribe({
       next: (data: any[]) => {

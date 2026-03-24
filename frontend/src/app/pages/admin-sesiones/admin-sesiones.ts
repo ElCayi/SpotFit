@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SesionService } from '../../services/sesion';
+import { ServicioService } from '../../services/servicio';
+import { SalaService } from '../../services/sala';
+import { UsuarioService } from '../../services/usuario';
 import { Sesion } from '../../models/sesion';
 
 @Component({
@@ -9,7 +12,7 @@ import { Sesion } from '../../models/sesion';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-sesiones.html',
-  styleUrl: '../admin-reservas/admin-reservas.css'
+  styleUrl: './admin-sesiones.css'
 })
 export class AdminSesionesComponent implements OnInit {
 
@@ -17,92 +20,132 @@ export class AdminSesionesComponent implements OnInit {
   form!: FormGroup;
   editingId: number | null = null;
 
-  constructor(private sesionService: SesionService, private fb: FormBuilder) {}
+  // Datos para los selects (se cargan del backend)
+  servicios: any[] = [];
+  salas: any[] = [];
+  monitores: any[] = [];
+
+  constructor(
+    private sesionService: SesionService,
+    private servicioService: ServicioService,
+    private salaService: SalaService,
+    private usuarioService: UsuarioService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit() {
-    this.initForm();
-    this.loadSesiones();
-  }
-
-  initForm() {
     this.form = this.fb.group({
-      fecha: [''],
-      hora: [''],
-      salaId: [''],
-      servicioId: [''],
-      monitorId: [''], // <-- ¡ESTO ES VITAL! Si no está aquí, el formulario no lo lee
-      aforoMaximo: ['20']
+      servicioId:  ['', Validators.required],
+      monitorId:   ['', Validators.required],
+      salaId:      ['', Validators.required],
+      fechaInicio: ['', Validators.required],
+      fechaFin:    ['', Validators.required]
+    });
+
+    this.load();
+    this.loadServicios();
+    this.loadSalas();
+    this.loadMonitores();
+  }
+
+  // ── Cargar datos ──
+
+  load() {
+    this.sesionService.getAll().subscribe({
+      next: data => this.sesiones = data,
+      error: err => console.error('Error cargando sesiones', err)
     });
   }
 
-  loadSesiones() {
-    this.sesionService.getAll().subscribe(data => {
-      this.sesiones = data;
-      // ⬇️ ESTO NOS DIRÁ LA VERDAD ⬇️
-      if (data.length > 0) {
-        console.log('ESTRUCTURA REAL DE UNA SESIÓN:', data[0]);
-      }
+  loadServicios() {
+    this.servicioService.getAll().subscribe({
+      next: data => this.servicios = data,
+      error: err => console.error('Error cargando servicios', err)
     });
   }
+
+  loadSalas() {
+    this.salaService.getAll().subscribe({
+      next: data => this.salas = data,
+      error: err => console.error('Error cargando salas', err)
+    });
+  }
+
+  loadMonitores() {
+    // Cargamos todos los usuarios y filtramos los que pueden impartir sesiones
+    this.usuarioService.getAll().subscribe({
+      next: data => {
+        this.monitores = data.filter(
+          u => u.rol === 'ROLE_MONITOR' || u.rol === 'ROLE_ADMIN'
+        );
+      },
+      error: err => console.error('Error cargando monitores', err)
+    });
+  }
+
+  // ── CRUD ──
 
   submit() {
-  const fechaStr = `${this.form.value.fecha}T${this.form.value.hora}:00`;
+    if (this.form.invalid) return;
 
-  const sesionData = {
-    fechaInicio: fechaStr,
-    fechaFin: fechaStr,
-    aforoMaximo: Number(this.form.value.aforoMaximo),
-    
-    // ✅ CORREGIDO: Usar los nombres correctos de los campos Java
-    servicio: { idServicio: Number(this.form.value.servicioId) },
-    sala:     { idSala: Number(this.form.value.salaId) },
-    monitor:  { idUsuario: Number(this.form.value.monitorId) }
-  };
+    const v = this.form.value;
 
-  console.log('Enviando datos...', sesionData);
+    // El backend espera la entidad Sesion con objetos anidados
+    // El aforoMaximo lo calcula el backend según la categoría del servicio
+    const payload: any = {
+      servicio: { idServicio: Number(v.servicioId) },
+      monitor:  { idUsuario: Number(v.monitorId) },
+      sala:     { idSala: Number(v.salaId) },
+      fechaInicio: v.fechaInicio + ':00',  // datetime-local da "2025-06-15T10:00", añadimos segundos
+      fechaFin:    v.fechaFin + ':00',
+      aforoMaximo: 0  // el backend lo recalcula si es <= 0
+    };
 
-  if (this.editingId) {
-    this.sesionService.update(this.editingId, sesionData as any).subscribe({
-      next: () => { this.resetForm(); this.loadSesiones(); },
-      error: () => { this.loadSesiones(); this.resetForm(); }
-    });
-  } else {
-    this.sesionService.create(sesionData as any).subscribe({
-      next: () => { 
-        alert('¡Sesión creada!'); 
-        this.resetForm(); 
-        this.loadSesiones(); 
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        alert('Error al crear la sesión');
-      }
-    });
+    if (this.editingId) {
+      this.sesionService.update(this.editingId, payload).subscribe({
+        next: () => { this.reset(); this.load(); },
+        error: err => console.error('Error actualizando', err)
+      });
+    } else {
+      this.sesionService.create(payload).subscribe({
+        next: () => { this.reset(); this.load(); },
+        error: err => console.error('Error creando', err)
+      });
+    }
   }
 }
 
-  edit(sesion: any) {
-  this.editingId = sesion.idSesion;
-  if (sesion.fechaInicio) {
-    const parts = sesion.fechaInicio.split('T');
+  edit(sesion: Sesion) {
+    this.editingId = sesion.idSesion;
+
+    // fechaInicio viene como "2025-06-15T10:00:00"
+    // datetime-local necesita "2025-06-15T10:00" (sin segundos)
+    const inicioCorto = sesion.fechaInicio ? sesion.fechaInicio.substring(0, 16) : '';
+    const finCorto    = sesion.fechaFin ? sesion.fechaFin.substring(0, 16) : '';
+
     this.form.patchValue({
-      fecha: parts[0],
-      hora: parts[1]?.substring(0, 5) || '',
-      salaId: sesion.idSala,
       servicioId: sesion.idServicio,
-      monitorId: sesion.idMonitor,
-      aforoMaximo: sesion.aforoMaximo
+      monitorId:  sesion.idMonitor,
+      salaId:     sesion.idSala,
+      fechaInicio: inicioCorto,
+      fechaFin:    finCorto
     });
   }
 }
 
   delete(id: number) {
-    if (!confirm('¿Eliminar sesión?')) return;
-    this.sesionService.delete(id).subscribe(() => this.loadSesiones());
+    if (!confirm('¿Eliminar esta sesión?')) return;
+    this.sesionService.delete(id).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error eliminando', err)
+    });
   }
 
-  resetForm() {
-    this.form.reset({ aforoMaximo: '20' });
-    this.editingId = null; 
+  reset() {
+    this.editingId = null;
+    this.form.reset({
+      servicioId: '', monitorId: '', salaId: '',
+      fechaInicio: '', fechaFin: ''
+    });
   }
 }

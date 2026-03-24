@@ -1,84 +1,72 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { ReservaService } from '../../services/reserva';
 import { Reserva } from '../../models/reserva';
 
 @Component({
   selector: 'app-admin-reservas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './admin-reservas.html',
-  styleUrls: ['./admin-reservas.css']
+  styleUrl: './admin-reservas.css'
 })
 export class AdminReservasComponent implements OnInit {
 
   reservas: Reserva[] = [];
-  form!: FormGroup;
-  editingId: number | null = null;
+  filtro: 'TODAS' | 'CONFIRMADA' | 'CANCELADA' = 'TODAS';
 
-  constructor(private service: ReservaService, private fb: FormBuilder) {}
+  constructor(private service: ReservaService) {}
 
   ngOnInit() {
-    this.form = this.fb.group({
-      usuarioId: [''],
-      sesionId: [''],
-      fechaReserva: [''],
-      estado: ['CONFIRMADA']
-    });
-
     this.load();
   }
 
   load() {
-    this.service.getAll().subscribe(data => this.reservas = data);
-  }
-
-  submit() {
-    // Construimos la "Matrioska" para Java
-    const reservaData = {
-      fechaReserva: this.form.value.fechaReserva || new Date().toISOString(),
-      estado: this.form.value.estado || 'CONFIRMADA',
-      
-      usuario: {
-        idUsuario: this.form.value.usuarioId // Coincide con tu Usuario.java
-      },
-      sesion: {
-        idSesion: this.form.value.sesionId // Coincide con tu Sesion.java
-      }
-    };
-
-    if (this.editingId) {
-      this.service.update(this.editingId, reservaData as any).subscribe(() => {
-        this.reset();
-        this.load();
-      });
-    } else {
-      this.service.create(reservaData as any).subscribe(() => {
-        this.reset();
-        this.load();
-      });
-    }
-  }
-
-  edit(reserva: any) {
-    this.editingId = reserva.idReserva;
-    this.form.patchValue({
-      usuarioId: reserva.usuario?.idUsuario,
-      sesionId: reserva.sesion?.idSesion,
-      // Recortamos la fecha para que se adapte al input de HTML
-      fechaReserva: reserva.fechaReserva ? reserva.fechaReserva.substring(0, 16) : '',
-      estado: reserva.estado
+    this.service.getAll().subscribe({
+      next: data => this.reservas = data,
+      error: err => console.error('Error cargando reservas', err)
     });
   }
 
-  delete(id: number) {
-    if (!confirm('¿Eliminar reserva?')) return;
-    this.service.delete(id).subscribe(() => this.load());
+  get reservasFiltradas(): Reserva[] {
+    if (this.filtro === 'TODAS') return this.reservas;
+    return this.reservas.filter(r => r.estado === this.filtro);
   }
 
-  reset() {
-    this.form.reset({ estado: 'CONFIRMADA' });
-    this.editingId = null;
+  setFiltro(filtro: 'TODAS' | 'CONFIRMADA' | 'CANCELADA') {
+    this.filtro = filtro;
+  }
+
+  cancelar(reserva: Reserva) {
+    if (!confirm('¿Cancelar la reserva de ' + reserva.nombreUsuario + '?')) return;
+
+    // El backend espera la entidad Reserva con los objetos anidados
+    const payload: any = {
+      usuario: { idUsuario: reserva.idUsuario },
+      sesion:  { idSesion: reserva.idSesion },
+      fechaReserva: reserva.fechaReserva,
+      estado: 'CANCELADA'
+    };
+
+    this.service.update(reserva.idReserva, payload).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error cancelando reserva', err)
+    });
+  }
+
+  eliminar(id: number) {
+    if (!confirm('¿Eliminar esta reserva permanentemente?')) return;
+    this.service.delete(id).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error eliminando', err)
+    });
+  }
+
+  get totalConfirmadas(): number {
+    return this.reservas.filter(r => r.estado === 'CONFIRMADA').length;
+  }
+
+  get totalCanceladas(): number {
+    return this.reservas.filter(r => r.estado === 'CANCELADA').length;
   }
 }

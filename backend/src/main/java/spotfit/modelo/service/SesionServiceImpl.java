@@ -1,31 +1,35 @@
 package spotfit.modelo.service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+ 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+ 
 import spotfit.modelo.dto.SesionDto;
 import spotfit.modelo.entities.Sesion;
+import spotfit.modelo.repository.ReservaRepository;
 import spotfit.modelo.repository.SesionRepository;
-
+ 
 @Service
 public class SesionServiceImpl implements SesionService {
-
+ 
     @Autowired
     private SesionRepository sesionRepository;
-
+ 
+    @Autowired
+    private ReservaRepository reservaRepository;
+ 
+    // ── Métodos CRUD (entidades) ──
+ 
     @Override
     public Sesion findById(Integer atributoId) {
         return sesionRepository.findById(atributoId).orElse(null);
     }
-
+ 
     @Override
     public List<Sesion> findAll() {
         return sesionRepository.findAll();
     }
-
+ 
     @Override
     public Sesion insertOne(Sesion entidad) {
         if (entidad.getAforoMaximo() <= 0) {
@@ -42,7 +46,7 @@ public class SesionServiceImpl implements SesionService {
         }
         return sesionRepository.save(entidad);
     }
-
+ 
     @Override
     public Sesion updateOne(Sesion entidad) {
         if (sesionRepository.existsById(entidad.getIdSesion()))
@@ -50,7 +54,7 @@ public class SesionServiceImpl implements SesionService {
         else
             return null;
     }
-
+ 
     @Override
     public int deleteOne(Integer atributoId) {
         if (sesionRepository.existsById(atributoId)) {
@@ -66,19 +70,31 @@ public class SesionServiceImpl implements SesionService {
     }
 
     @Override
+    public SesionDto findDtoById(Integer id) {
+        Sesion sesion = sesionRepository.findById(id).orElse(null);
+        if (sesion == null) return null;
+ 
+        SesionDto dto = SesionDto.convertirADto(sesion);
+        // Contamos las reservas CONFIRMADAS de esta sesión
+        long ocupadas = reservaRepository.countBySesion_IdSesionAndEstado(sesion.getIdSesion(), "CONFIRMADA");
+        dto.setReservasActuales(ocupadas);
+        return dto;
+    }
+ 
+    @Override
     public List<SesionDto> findAllDtos() {
         return sesionRepository.findAll()
                 .stream()
-                .map(SesionDto::convertirADto)
+                .map(sesion -> {
+                    SesionDto dto = SesionDto.convertirADto(sesion);
+                    // Para cada sesión, contamos cuántas reservas confirmadas tiene
+                    long ocupadas = reservaRepository.countBySesion_IdSesionAndEstado(sesion.getIdSesion(), "CONFIRMADA");
+                    dto.setReservasActuales(ocupadas);
+                    return dto;
+                })
                 .toList();
     }
-
-    @Override
-    public SesionDto findDtoById(Integer id) {
-        Sesion sesion = sesionRepository.findById(id).orElse(null);
-        return sesion != null ? SesionDto.convertirADto(sesion) : null;
-    }
-
+	
     @Override
     public List<SesionDto> findSesionesHoy() {
         LocalDate hoy = LocalDate.now();

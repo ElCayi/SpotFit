@@ -1,57 +1,123 @@
 <div class="container">
   <h2>Gestión de Sesiones</h2>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
-    
-    <input type="date" formControlName="fecha" title="Fecha de la sesión">
-    <input type="time" formControlName="hora" title="Hora de inicio">
-    
-    <input type="number" placeholder="ID de la Sala" formControlName="salaId">
-    <input type="number" placeholder="ID del Servicio" formControlName="servicioId">
-    
-    <input type="number" placeholder="ID del Monitor (Usuario)" formControlName="monitorId">
-    
-    <input type="number" placeholder="Aforo Máximo" formControlName="aforoMaximo">
+  <h2>Gestión de Sesiones</h2>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
-    <button type="button" (click)="resetForm()">Cancelar</button>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+    <!-- Fila: Servicio + Monitor -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="servicioId">Servicio</label>
+        <select id="servicioId" formControlName="servicioId">
+          <option value="" disabled>Seleccionar servicio...</option>
+          <option *ngFor="let s of servicios" [value]="s.idServicio">
+            {{ s.nombre }} ({{ s.categoria }})
+          </option>
+        </select>
+        <span class="error-msg"
+              *ngIf="form.get('servicioId')?.invalid && form.get('servicioId')?.touched">
+          Obligatorio
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="monitorId">Monitor</label>
+        <select id="monitorId" formControlName="monitorId">
+          <option value="" disabled>Seleccionar monitor...</option>
+          <option *ngFor="let m of monitores" [value]="m.idUsuario">
+            {{ m.nombre }} {{ m.apellidos }}
+          </option>
+        </select>
+        <span class="error-msg"
+              *ngIf="form.get('monitorId')?.invalid && form.get('monitorId')?.touched">
+          Obligatorio
+        </span>
+      </div>
+    </div>
+
+    <!-- Sala -->
+    <div class="form-field">
+      <label for="salaId">Sala</label>
+      <select id="salaId" formControlName="salaId">
+        <option value="" disabled>Seleccionar sala...</option>
+        <option *ngFor="let sala of salas" [value]="sala.idSala">
+          {{ sala.nombre }} ({{ sala.capacidad }} personas)
+        </option>
+      </select>
+      <span class="error-msg"
+            *ngIf="form.get('salaId')?.invalid && form.get('salaId')?.touched">
+        Obligatorio
+      </span>
+    </div>
+
+    <!-- Fila: Fecha inicio + Fecha fin -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="fechaInicio">Fecha y hora de inicio</label>
+        <input id="fechaInicio" type="datetime-local" formControlName="fechaInicio">
+        <span class="error-msg"
+              *ngIf="form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched">
+          Obligatorio
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="fechaFin">Fecha y hora de fin</label>
+        <input id="fechaFin" type="datetime-local" formControlName="fechaFin">
+        <span class="error-msg"
+              *ngIf="form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched">
+          Obligatorio
+        </span>
+      </div>
+    </div>
+
+    <p class="form-hint">
+      El aforo se calcula automáticamente según la categoría del servicio: CLASE = 15 plazas, SALUD = 1 plaza.
+    </p>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Servicio</th>
-      <th>Sala</th>
-      <th>Monitor</th>
-      <th>Fecha y Hora</th>
-      <th>Aforo</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
+  <!-- Tabla -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Servicio</th>
+        <th>Monitor</th>
+        <th>Sala</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Aforo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <tr *ngFor="let s of sesiones">
-      <td>{{ s.idSesion }}</td>
-      
-      <td>{{ s.nombreServicio }}</td>
-      <td>{{ s.nombreSala }}</td>
-      <td>{{ s.nombreMonitor }}</td>
-      
-      <td>{{ s.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
-      <td>{{ s.aforoMaximo }}</td>
-      
-      <td>
-        <button (click)="edit(s)">Editar</button>
-        <button (click)="delete(s.idSesion!)">Eliminar</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <tbody>
+      <tr *ngFor="let s of sesiones">
+        <td>{{ s.idSesion }}</td>
+        <td>{{ s.nombreServicio }}</td>
+        <td>{{ s.nombreMonitor }}</td>
+        <td>{{ s.nombreSala }}</td>
+        <td>{{ s.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ s.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ s.aforoMaximo }}</td>
+        <td>
+          <button (click)="edit(s)">Editar</button>
+          <button (click)="delete(s.idSesion)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
 </div>

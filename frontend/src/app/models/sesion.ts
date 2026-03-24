@@ -1,7 +1,3 @@
-import { Servicio } from './servicio';
-import { Usuario } from './usuario';
-import { Sala } from './sala';
-
 export interface Sesion {
   idSesion?: number;
   
@@ -16,9 +12,5 @@ export interface Sesion {
   fechaInicio: string;
   fechaFin: string;
   aforoMaximo: number;
-
-  // Campos anidados (para crear/editar)
-  servicio?: any;
-  monitor?: any;
-  sala?: any;
+  reservasActuales: number; 
 }
