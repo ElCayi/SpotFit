@@ -33,7 +33,7 @@ public class NoticiaRestController {
 
     // Métodos POST, PUT, DELETE siguen usando entidades
     
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addNoticia(@RequestBody Noticia noticia) {
         return ResponseEntity.status(201).body(noticiaService.insertOne(noticia));
     }

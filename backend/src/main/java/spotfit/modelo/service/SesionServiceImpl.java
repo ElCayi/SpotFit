@@ -1,5 +1,7 @@
 package spotfit.modelo.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,6 @@ public class SesionServiceImpl implements SesionService {
     @Autowired
     private SesionRepository sesionRepository;
 
-
-  //Metodos que nos devuelven la entidad sesion entera
-
     @Override
     public Sesion findById(Integer atributoId) {
         return sesionRepository.findById(atributoId).orElse(null);
@@ -26,38 +25,24 @@ public class SesionServiceImpl implements SesionService {
     public List<Sesion> findAll() {
         return sesionRepository.findAll();
     }
-    
-    // INSERTAR SESIÓN CON AFORO AUTOMÁTICO
-    
-//    ¿Cómo funciona?
-//    	     * 1. El ADMIN crea una sesión desde el frontend
-//    	     * 2. Selecciona un servicio (ej: "Fisioterapia")
-//    	     * 3. El backend consulta la categoría de ese servicio ("SALUD")
-//    	     * 4. Según la categoría, asigna el aforo:
-//    	     *    - SALUD → 1 plaza (citas individuales)
-//    	     *    - CLASE → 15 plazas (clases grupales)
-//    	     * 5. Guarda la sesión con el aforo calculado
 
     @Override
     public Sesion insertOne(Sesion entidad) {
-    	
-    	if (entidad.getAforoMaximo() <= 0) {            
-        // Obtenemos la categoría del servicio asociado  
-        String categoria = entidad.getServicio().getCategoria();
-        int aforoCalculado;     
-        if ("SALUD".equals(categoria)) {
-            aforoCalculado = 1;
-        } else if ("CLASE".equals(categoria)) {
-            aforoCalculado = 15;
-        } else {
-            aforoCalculado = 10;
+        if (entidad.getAforoMaximo() <= 0) {
+            String categoria = entidad.getServicio().getCategoria();
+            int aforoCalculado;
+            if ("SALUD".equals(categoria)) {
+                aforoCalculado = 1;
+            } else if ("CLASE".equals(categoria)) {
+                aforoCalculado = 15;
+            } else {
+                aforoCalculado = 10;
+            }
+            entidad.setAforoMaximo(aforoCalculado);
         }
-        entidad.setAforoMaximo(aforoCalculado);
+        return sesionRepository.save(entidad);
     }
-    //Guardamos la sesión en la base de datos
-    return sesionRepository.save(entidad);
-}
-    
+
     @Override
     public Sesion updateOne(Sesion entidad) {
         if (sesionRepository.existsById(entidad.getIdSesion()))
@@ -79,39 +64,30 @@ public class SesionServiceImpl implements SesionService {
             return 0;
         }
     }
-    
-  //Metodos que nos devuelven DTOs
 
     @Override
     public List<SesionDto> findAllDtos() {
         return sesionRepository.findAll()
                 .stream()
-                .map(sesion -> {
-                    SesionDto dto = SesionDto.convertirADto(sesion);
-                    dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
-                    return dto;
-                })
+                .map(SesionDto::convertirADto)
                 .toList();
     }
 
     @Override
     public SesionDto findDtoById(Integer id) {
         Sesion sesion = sesionRepository.findById(id).orElse(null);
-        if (sesion == null) return null;
-        SesionDto dto = SesionDto.convertirADto(sesion);
-        dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
-        return dto;
+        return sesion != null ? SesionDto.convertirADto(sesion) : null;
     }
-	
+
     @Override
     public List<SesionDto> findSesionesHoy() {
-        return sesionRepository.findSesionesHoy()
+        LocalDate hoy = LocalDate.now();
+        LocalDateTime inicioHoy = hoy.atStartOfDay();
+        LocalDateTime finHoy = hoy.atTime(23, 59, 59);
+        
+        return sesionRepository.findByFechaInicioBetween(inicioHoy, finHoy)
                 .stream()
-                .map(sesion -> {
-                    SesionDto dto = SesionDto.convertirADto(sesion);
-                    dto.setReservasActuales(sesionRepository.countReservasConfirmadas(sesion.getIdSesion()));
-                    return dto;
-                })
+                .map(SesionDto::convertirADto)
                 .toList();
     }
 }

@@ -20,31 +20,53 @@ export class AdminNoticiasComponent implements OnInit {
   constructor(private service: NoticiaService, private fb: FormBuilder) {}
 
   ngOnInit() {
+    // Definimos el formulario con los nombres exactos que espera el Backend
     this.form = this.fb.group({
       titulo: [''],
       contenido: [''],
-      fecha: ['']
+      urlImagen: [''], 
+      fechaPublicacion: [''] 
     });
 
     this.load();
   }
 
   load() {
-    this.service.getAll().subscribe(data => this.noticias = data);
+    this.service.getAll().subscribe(data => {
+      this.noticias = data;
+    });
   }
 
   submit() {
+    // Creamos un objeto limpio para enviar al servidor.
+    // IMPORTANTE: No enviamos 'fechaPublicacion' para que MySQL 
+    // use su valor por defecto (NOW()) y no nos dé error de formato.
+    const noticiaData = {
+      titulo: this.form.value.titulo,
+      contenido: this.form.value.contenido,
+      urlImagen: this.form.value.urlImagen || 'https://via.placeholder.com/150'
+    };
+
     if (this.editingId) {
-      this.service.update(this.editingId, this.form.value)
-        .subscribe(() => { this.reset(); this.load(); });
+      // Si estamos editando, enviamos los datos limpios al update
+      this.service.update(this.editingId, noticiaData as Noticia)
+        .subscribe(() => { 
+          this.reset(); 
+          this.load(); 
+        });
     } else {
-      this.service.create(this.form.value)
-        .subscribe(() => { this.reset(); this.load(); });
+      // Si estamos creando, enviamos los datos limpios al create
+      this.service.create(noticiaData as Noticia)
+        .subscribe(() => { 
+          this.reset(); 
+          this.load(); 
+        });
     }
   }
 
   edit(noticia: Noticia) {
     this.editingId = noticia.idNoticia!;
+    // Cargamos los datos de la noticia en el formulario
     this.form.patchValue(noticia);
   }
 

@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     private final JwtUtil jwtUtil;
 
@@ -37,6 +41,17 @@ public class JwtFilter extends OncePerRequestFilter {
             if (jwtUtil.isTokenValid(token)) {
                 String email = jwtUtil.extractEmail(token);
                 String role = jwtUtil.extractRole(token);
+
+                // --- 👇 EL ARREGLO MÁGICO 👇 ---
+                // Si el rol que viene del token no empieza por "ROLE_", se lo añadimos
+                if (!role.startsWith("ROLE_")) {
+                    role = "ROLE_" + role;
+                }
+                // -------------------------------
+
+                // Tu log para depurar (ahora verás que imprime ROLE_ADMIN)
+                log.warn("=== JWT DEBUG === email={} role={} method={} uri={}",
+                        email, role, request.getMethod(), request.getRequestURI());
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(

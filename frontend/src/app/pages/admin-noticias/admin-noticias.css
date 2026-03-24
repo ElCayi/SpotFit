@@ -163,3 +163,45 @@ td button:last-child {
 td button:hover {
   filter: brightness(1.1);
 }
+/* ... (Todo lo que ya tienes se queda igual, solo añade o modifica esto al final) ... */
+
+/* Ajuste para que las imágenes en la tabla no se vean gigantes */
+td img {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+}
+
+/* Estilo para que el campo de contenido (textarea) se vea igual que los inputs */
+/* Si decides cambiar el input de contenido por un textarea para textos largos */
+.form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px; /* Menos redondeado para que quepa el texto */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 15, 15, 0.9);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  min-height: 80px;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.form textarea:focus {
+  border-color: #ff7ac4;
+}
+
+/* Asegurar que los botones de la tabla no se peguen en móvil */
+@media (max-width: 600px) {
+  .container {
+    padding: 16px;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

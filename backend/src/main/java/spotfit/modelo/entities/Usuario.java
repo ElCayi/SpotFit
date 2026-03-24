@@ -108,23 +108,6 @@ public class Usuario implements UserDetails {
     /**
      * Devuelve las autoridades (permisos/roles) del usuario.
      * 
-     * ¿Cuándo se llama?
-     * Spring Security llama a este método después de autenticar al usuario
-     * para saber qué permisos tiene.
-     * 
-     * ¿Qué devuelve?
-     * Una colección de objetos GrantedAuthority.
-     * En nuestro caso, devolvemos una lista con UN SOLO elemento:
-     * el nombre del perfil del usuario.
-     * 
-     * Ejemplo de flujo completo:
-     * 1. Usuario "pedro@mail.com" hace login
-     * 2. Spring Security carga el usuario de BD
-     * 3. Pedro tiene perfil = Perfil{nombre="ROLE_CLIENTE"}
-     * 4. Este método devuelve [SimpleGrantedAuthority("ROLE_CLIENTE")]
-     * 5. Spring Security compara esto con las rutas protegidas
-     * 6. Si la ruta requiere .hasRole("CLIENTE"), Pedro puede acceder
-     * 
      * IMPORTANTE:
      * - perfil.getNombre() devuelve "ROLE_CLIENTE" (con prefijo ROLE_)
      * - SimpleGrantedAuthority envuelve ese string en el formato que Spring entiende
@@ -135,15 +118,7 @@ public class Usuario implements UserDetails {
         return List.of(new SimpleGrantedAuthority(perfil.getNombre()));
     }
     
-    /**
-     * Devuelve la contraseña del usuario.
-     * 
-     * Spring Security llama a este método durante el login para
-     * comparar la contraseña ingresada con la almacenada en BD.
-     * 
-     * Retorna el campo "contrasena" que incluye el prefijo {noop}
-     * Ejemplo: "{noop}1234"
-     */
+    
     @Override
     public String getPassword() {
         return contrasena;
@@ -152,15 +127,6 @@ public class Usuario implements UserDetails {
     /**
      * Devuelve el "username" del usuario.
      * 
-     * En sistemas tradicionales, esto devolvería un campo "username".
-     * En nuestro caso, usamos el EMAIL como identificador único.
-     * 
-     * Por eso cuando hagas login con HTTP Basic Auth o JWT,
-     * usarás el email como username:
-     * - Username: pedro@mail.com
-     * - Password: 1234
-     * 
-     * Spring Security usará este método internamente para identificar usuarios.
      */
     @Override
     public String getUsername() {
@@ -170,11 +136,6 @@ public class Usuario implements UserDetails {
     /**
      * ¿La cuenta del usuario ha expirado?
      * 
-     * Devolvemos siempre TRUE porque no gestionamos expiración de cuentas.
-     * 
-     * Si en el futuro quisieras implementar cuentas temporales
-     * (por ejemplo, suscripciones que caducan), aquí verificarías
-     * una fecha de expiración y devolverías true/false según corresponda.
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -183,12 +144,6 @@ public class Usuario implements UserDetails {
     
     /**
      * ¿La cuenta del usuario está bloqueada?
-     * 
-     * Devolvemos siempre TRUE (= cuenta NO bloqueada).
-     * 
-     * Si en el futuro quisieras bloquear usuarios tras varios intentos
-     * fallidos de login, aquí verificarías un campo "bloqueado" y
-     * devolverías el valor correspondiente.
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -198,11 +153,6 @@ public class Usuario implements UserDetails {
     /**
      * ¿Las credenciales (contraseña) del usuario han expirado?
      * 
-     * Devolvemos siempre TRUE (= credenciales NO expiradas).
-     * 
-     * Si en el futuro quisieras forzar cambios de contraseña periódicos
-     * (por ejemplo, cada 90 días), aquí verificarías la fecha del último
-     * cambio de contraseña y devolverías true/false.
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -214,15 +164,6 @@ public class Usuario implements UserDetails {
      * 
      * Devolvemos el valor del campo "activo" de la base de datos.
      * 
-     * Flujo completo:
-     * 1. Usuario intenta hacer login
-     * 2. Spring Security verifica usuario y contraseña correctos
-     * 3. Spring Security llama a isEnabled()
-     * 4. Si devuelve FALSE, rechaza el login aunque la contraseña sea correcta
-     * 5. Si devuelve TRUE, permite el acceso
-     * 
-     * Esto permite "dar de baja" usuarios sin borrarlos de la base de datos.
-     * Ejemplo: Carlos (id=7) tiene activo=false, no podrá hacer login.
      */
     @Override
     public boolean isEnabled() {

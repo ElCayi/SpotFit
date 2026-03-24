@@ -1,20 +1,17 @@
 <div class="container">
-
   <h2>Administrar Reservas</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
-
     <input type="number" placeholder="ID Usuario" formControlName="usuarioId">
     <input type="number" placeholder="ID Sesión" formControlName="sesionId">
-    <input type="date" formControlName="fecha">
-    <input type="text" placeholder="Estado" formControlName="estado">
+    
+    <input type="datetime-local" formControlName="fechaReserva">
+    <input type="text" placeholder="Estado (Ej: CONFIRMADA)" formControlName="estado">
 
     <button type="submit">
       {{ editingId ? 'Actualizar' : 'Crear' }}
     </button>
-
     <button type="button" (click)="reset()">Cancelar</button>
-
   </form>
 
   <hr>
@@ -24,8 +21,8 @@
       <tr>
         <th>ID</th>
         <th>Usuario</th>
-        <th>Sesión</th>
-        <th>Fecha</th>
+        <th>Clase (Sesión)</th>
+        <th>Fecha y Hora</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
@@ -34,9 +31,11 @@
     <tbody>
       <tr *ngFor="let r of reservas">
         <td>{{ r.idReserva }}</td>
-        <td>{{ r.idUsuario }}</td>
-        <td>{{ r.idSesion }}</td>
-        <td>{{ r.fechaReserva }}</td>
+        
+        <td>{{ r.usuario?.nombre || 'ID: ' + r.usuario?.idUsuario }}</td>
+        <td>{{ r.sesion?.servicio?.nombre || 'ID: ' + r.sesion?.idSesion }}</td>
+        
+        <td>{{ r.fechaReserva | date:'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ r.estado }}</td>
         <td>
           <button (click)="edit(r)">Editar</button>
@@ -45,5 +44,4 @@
       </tr>
     </tbody>
   </table>
-
 </div>

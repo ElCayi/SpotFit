@@ -1,19 +1,25 @@
 <div class="container">
-
   <h2>Administrar Usuarios</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
-
+    
     <input type="text" placeholder="Nombre" formControlName="nombre">
+    <input type="text" placeholder="Apellidos" formControlName="apellidos">
+    
     <input type="email" placeholder="Email" formControlName="email">
-    <input type="text" placeholder="Rol" formControlName="rol">
+    <input type="password" placeholder="Contraseña (Ej: {noop}1234)" formControlName="contrasena">
+    
+    <select formControlName="activo">
+      <option value="true">Usuario Activo</option>
+      <option value="false">Usuario Inactivo</option>
+    </select>
+    
+    <input type="number" placeholder="ID Perfil (1=Admin, 2=Monitor, 3=Cliente)" formControlName="perfilId">
 
     <button type="submit">
       {{ editingId ? 'Actualizar' : 'Crear' }}
     </button>
-
     <button type="button" (click)="reset()">Cancelar</button>
-
   </form>
 
   <hr>
@@ -22,9 +28,10 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Nombre</th>
+        <th>Nombre Completo</th>
         <th>Email</th>
-        <th>Rol</th>
+        <th>Perfil</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -32,9 +39,15 @@
     <tbody>
       <tr *ngFor="let u of usuarios">
         <td>{{ u.idUsuario }}</td>
-        <td>{{ u.nombre }}</td>
+        
+        <td>{{ u.nombre }} {{ u.apellidos }}</td>
+        
         <td>{{ u.email }}</td>
+        
         <td>{{ u.rol }}</td>
+        
+        <td>{{ u.activo ? '✅ Activo' : '❌ Baja' }}</td>
+        
         <td>
           <button (click)="edit(u)">Editar</button>
           <button (click)="delete(u.idUsuario!)">Eliminar</button>
@@ -42,5 +55,4 @@
       </tr>
     </tbody>
   </table>
-
 </div>

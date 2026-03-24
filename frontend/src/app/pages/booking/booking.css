@@ -155,9 +155,16 @@
 }
 
 .filter-date input {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
+  background: rgba(15, 15, 15, 0.9); /* Fondo oscuro */
+  color: #fff; /* Texto blanco */
+  outline: none;
+  font-family: inherit;
+  
+  /* 🔥 EL TRUCO: Fuerza el calendario al modo oscuro */
+  color-scheme: dark; 
 }
 
 /* Lista de clases */

@@ -163,3 +163,18 @@ td button:last-child {
 td button:hover {
   filter: brightness(1.1);
 }
+
+.form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 15, 15, 0.9);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  
+  /* 🔥 EL TRUCO: Fuerza el calendario y el reloj nativo a modo oscuro */
+  color-scheme: dark; 
+}

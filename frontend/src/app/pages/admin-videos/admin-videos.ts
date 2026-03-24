@@ -22,7 +22,8 @@ export class AdminVideosComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       titulo: [''],
-      url: ['']
+      urlVideo: [''], // Cambiado de 'url' a 'urlVideo'
+      categoria: [''] // Añadido para que coincida con tu entidad
     });
 
     this.load();
@@ -33,11 +34,18 @@ export class AdminVideosComponent implements OnInit {
   }
 
   submit() {
+    // Creamos el objeto limpio para asegurar que los nombres sean correctos
+    const videoData = {
+      titulo: this.form.value.titulo,
+      urlVideo: this.form.value.urlVideo,
+      categoria: this.form.value.categoria || 'General'
+    };
+
     if (this.editingId) {
-      this.service.update(this.editingId, this.form.value)
+      this.service.update(this.editingId, videoData as Video)
         .subscribe(() => { this.reset(); this.load(); });
     } else {
-      this.service.create(this.form.value)
+      this.service.create(videoData as Video)
         .subscribe(() => { this.reset(); this.load(); });
     }
   }

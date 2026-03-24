@@ -10,14 +10,13 @@ import spotfit.modelo.entities.Usuario;
 import spotfit.modelo.service.UsuarioService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/usuarios")
 public class UsuarioRestController {
 
     @Autowired
     private UsuarioService usuarioService;
     
-    //Metodos findAll y findById filtrados con el DTO
-
     @GetMapping("")
     public List<UsuarioDto> getAllUsuarios() {
         return usuarioService.findAllDtos();
@@ -25,27 +24,30 @@ public class UsuarioRestController {
 
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDto> getOneUsuario(@PathVariable int idUsuario) {
-        UsuarioDto usuario  = usuarioService.findDtoById(idUsuario);
+        UsuarioDto usuario = usuarioService.findDtoById(idUsuario);
         if (usuario != null)
             return ResponseEntity.status(200).body(usuario);
         else
             return ResponseEntity.status(404).body(null);
     }
     
-    //Demas metodos
-
     @PostMapping("")
     public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) {
-        return ResponseEntity.status(201).body(usuarioService.insertOne(usuario));
+        Usuario guardado = usuarioService.insertOne(usuario);
+        if (guardado != null) {
+            return ResponseEntity.status(201).body(UsuarioDto.convertirADto(guardado));
+        }
+        return ResponseEntity.status(400).body("Error al crear usuario");
     }
 
     @PutMapping("/{idUsuario}")
     public ResponseEntity<?> updateUsuario(@PathVariable int idUsuario, @RequestBody Usuario usuario) {
         usuario.setIdUsuario(idUsuario);
-        if (usuarioService.updateOne(usuario) != null)
-            return ResponseEntity.status(200).body(usuario);
-        else
-            return ResponseEntity.status(404).body("Usuario no existe");
+        Usuario actualizado = usuarioService.updateOne(usuario);
+        if (actualizado != null) {
+            return ResponseEntity.status(200).body(UsuarioDto.convertirADto(actualizado));
+        }
+        return ResponseEntity.status(404).body("Usuario no existe");
     }
 
     @DeleteMapping("/{idUsuario}")
