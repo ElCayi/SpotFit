@@ -309,6 +309,7 @@ export class BookingComponent implements OnInit {
     this.reservaService.create(reservaPayload as any).subscribe({
       next: () => {
         this.cargarReservas();
+        this.cargarSesiones();  // Recargar para actualizar el contador de plazas
         alert('Reserva realizada correctamente');
       },
       error: err => {

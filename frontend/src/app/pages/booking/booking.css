@@ -444,3 +444,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+.btn-reservar:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.5);
+}

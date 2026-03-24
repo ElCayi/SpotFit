@@ -1,8 +1,8 @@
-import { Component, signal, inject, effect, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServicioService } from '../../services/servicio';
 import { Servicio } from '../../models/servicio';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-servicios',
@@ -21,40 +21,65 @@ export class AdminServiciosComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      nombre: [''],
-      descripcion: [''],
-      duracion: ['']
+      nombre:      ['', Validators.required],
+      descripcion: ['', Validators.required],
+      categoria:   ['CLASE', Validators.required]  // 'CLASE' o 'SALUD'
     });
 
     this.load();
   }
 
   load() {
-    this.service.getAll().subscribe(data => this.servicios = data);
+    this.service.getAll().subscribe({
+      next: data => this.servicios = data,
+      error: err => console.error('Error cargando servicios', err)
+    });
   }
 
   submit() {
+    if (this.form.invalid) return;
+
+    const payload = this.form.value;
+
     if (this.editingId) {
-      this.service.update(this.editingId, this.form.value)
-        .subscribe(() => { this.reset(); this.load(); });
+      this.service.update(this.editingId, payload).subscribe({
+        next: () => { this.reset(); this.load(); },
+        error: err => console.error('Error actualizando', err)
+      });
     } else {
-      this.service.create(this.form.value)
-        .subscribe(() => { this.reset(); this.load(); });
+      this.service.create(payload).subscribe({
+        next: () => { this.reset(); this.load(); },
+        error: err => console.error('Error creando', err)
+      });
     }
   }
 
   edit(servicio: Servicio) {
-    this.editingId = servicio.idServicio!;
-    this.form.patchValue(servicio);
+    this.editingId = servicio.idServicio;
+    this.form.patchValue({
+      nombre: servicio.nombre,
+      descripcion: servicio.descripcion,
+      categoria: servicio.categoria
+    });
   }
 
   delete(id: number) {
-    if (!confirm('¿Eliminar servicio?')) return;
-    this.service.delete(id).subscribe(() => this.load());
+    if (!confirm('¿Eliminar este servicio?')) return;
+    this.service.delete(id).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error eliminando', err)
+    });
   }
 
   reset() {
-    this.form.reset();
     this.editingId = null;
+    this.form.reset({ nombre: '', descripcion: '', categoria: 'CLASE' });
+  }
+
+  /** Traduce la categoría a texto legible para la tabla */
+  getCategoriaLabel(categoria: string): string {
+    if (categoria === 'CLASE') return 'Clase grupal';
+    if (categoria === 'SALUD') return 'Salud individual';
+    return categoria;
   }
 }

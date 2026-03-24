@@ -180,14 +180,15 @@
         <div class="class-status">
           <div class="spots">
             <span class="spots-main">
-              Aforo maximo: {{ sesion.aforoMaximo }}
+              {{ sesion.reservasActuales }}/{{ sesion.aforoMaximo }} plazas ocupadas
             </span>
           </div>
-
+ 
           <button
             class="btn-reservar"
+            [disabled]="sesion.reservasActuales >= sesion.aforoMaximo"
             (click)="reservar(sesion)">
-            Reservar
+            {{ sesion.reservasActuales >= sesion.aforoMaximo ? 'Completa' : 'Reservar' }}
           </button>
         </div>
       </article>
@@ -283,14 +284,15 @@
         <div class="class-status">
           <div class="spots">
             <span class="spots-main">
-              Aforo maximo: {{ sesion.aforoMaximo }}
+              {{ sesion.reservasActuales }}/{{ sesion.aforoMaximo }} plazas ocupadas
             </span>
           </div>
-
+ 
           <button
             class="btn-reservar"
+            [disabled]="sesion.reservasActuales >= sesion.aforoMaximo"
             (click)="reservar(sesion)">
-            Reservar cita
+            {{ sesion.reservasActuales >= sesion.aforoMaximo ? 'Completa' : 'Reservar cita' }}
           </button>
         </div>
       </article>

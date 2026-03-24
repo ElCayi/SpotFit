@@ -1,40 +1,17 @@
-/* Reset y tipografía */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
+/* ── Admin Videos ── */
 
-/* Fondo general */
 :host {
   display: block;
-  min-height: 100vh;
-  padding: 40px;
-  background-image: url("/gym.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   color: #fff;
 }
 
-/* Contenedor principal */
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 32px;
-  background: rgba(10, 10, 10, 0.78);
-  border-radius: 18px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-/* Título */
 h2 {
-  font-size: 28px;
+  font-size: 26px;
   margin-bottom: 20px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -42,89 +19,153 @@ h2 {
   text-align: center;
 }
 
-/* Formulario */
+/* ── Formulario ── */
+
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: 24px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 24px;
 }
 
-.form input {
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Inputs y Select ── */
+
+.form input[type="text"],
+.form select {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 999px;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(15, 15, 15, 0.9);
   color: #fff;
   font-size: 14px;
+  font-family: inherit;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.3);
 }
 
-.form input:focus {
-  border-color: #ff7ac4;
-  box-shadow: 0 0 0 1px rgba(255, 122, 196, 0.5);
+.form input:focus,
+.form select:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
 }
 
-/* Botones */
-button {
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: none;
+.form select {
   cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%239ca3af'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 34px;
+}
+
+.form select option {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* ── Validación ── */
+
+.error-msg {
+  font-size: 12px;
+  color: #f87171;
+}
+
+/* ── Botones del formulario ── */
+
+.form-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.form-buttons button[type="submit"] {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: none;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transition: transform 0.15s ease, filter 0.15s ease;
-}
-
-button[type="submit"] {
-  background: linear-gradient(135deg, #ff7ac4, #7b5cff);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
   color: #fff;
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.8),
-    0 0 24px rgba(255, 122, 196, 0.7);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
 }
 
-button[type="submit"]:hover {
+.form-buttons button[type="submit"]:hover:not(:disabled) {
   transform: translateY(-1px);
-  filter: brightness(1.1);
+  filter: brightness(1.08);
 }
 
-button[type="button"] {
-  background: rgba(255, 255, 255, 0.15);
+.form-buttons button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form-buttons button[type="button"] {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-button[type="button"]:hover {
-  background: rgba(255, 255, 255, 0.25);
+.form-buttons button[type="button"]:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Separador */
+/* ── Separador ── */
+
 hr {
   border: none;
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   margin: 24px 0;
 }
 
-/* Tabla */
+/* ── Tabla ── */
+
 table {
   width: 100%;
   border-collapse: collapse;
   background: rgba(20, 20, 20, 0.85);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }
 
 thead {
@@ -132,45 +173,81 @@ thead {
 }
 
 th, td {
-  padding: 14px;
+  padding: 12px 14px;
   text-align: left;
   font-size: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  font-weight: 500;
 }
 
-/* Enlaces de la tabla */
-td a {
-  color: #ff7ac4;
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Badge de categoría ── */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+/* ── Link de ver video ── */
+
+.link-ver {
+  color: #818cf8;
   text-decoration: none;
   font-weight: 600;
+  font-size: 13px;
 }
 
-td a:hover {
+.link-ver:hover {
   text-decoration: underline;
 }
 
-/* Botones de acciones */
+/* ── Botones de acciones de la tabla ── */
+
 td button {
-  padding: 6px 12px;
+  padding: 5px 12px;
   font-size: 12px;
   margin-right: 6px;
   border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: filter 0.15s ease;
 }
 
 td button:first-child {
-  background: #7b5cff;
+  background: #6366f1;
   color: #fff;
 }
 
 td button:last-child {
-  background: #ff4f4f;
+  background: #ef4444;
   color: #fff;
 }
 
 td button:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.15);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 700px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }

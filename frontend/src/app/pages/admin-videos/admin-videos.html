@@ -4,24 +4,64 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
-    <input type="text" placeholder="Título" formControlName="titulo">
-    <input type="text" placeholder="URL del Video" formControlName="url">
+    <!-- Título -->
+    <div class="form-field">
+      <label for="titulo">Título</label>
+      <input id="titulo" type="text" placeholder="Ej: Clase completa de Yoga" formControlName="titulo">
+      <span class="error-msg"
+            *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+        Obligatorio
+      </span>
+    </div>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
+    <!-- Fila: URL + Categoría -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="urlVideo">URL del video</label>
+        <input id="urlVideo" type="text" placeholder="https://youtube.com/..." formControlName="urlVideo">
+        <span class="error-msg"
+              *ngIf="form.get('urlVideo')?.invalid && form.get('urlVideo')?.touched">
+          Obligatorio
+        </span>
+      </div>
 
-    <button type="button" (click)="reset()">Cancelar</button>
+      <div class="form-field">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" formControlName="categoria">
+          <option value="" disabled>Seleccionar...</option>
+          <option value="Yoga">Yoga</option>
+          <option value="Fuerza">Fuerza</option>
+          <option value="Cardio">Cardio</option>
+          <option value="Pilates">Pilates</option>
+          <option value="Funcional">Funcional</option>
+          <option value="General">General</option>
+        </select>
+        <span class="error-msg"
+              *ngIf="form.get('categoria')?.invalid && form.get('categoria')?.touched">
+          Obligatorio
+        </span>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
         <th>ID</th>
         <th>Título</th>
+        <th>Categoría</th>
         <th>URL</th>
         <th>Acciones</th>
       </tr>
@@ -32,11 +72,16 @@
         <td>{{ v.idVideo }}</td>
         <td>{{ v.titulo }}</td>
         <td>
-          <a [href]="v.urlVideo" target="_blank">Ver</a>
+          <span class="badge">{{ v.categoria }}</span>
+        </td>
+        <td>
+          <a [href]="v.urlVideo" target="_blank" rel="noopener noreferrer" class="link-ver">
+            Ver video
+          </a>
         </td>
         <td>
           <button (click)="edit(v)">Editar</button>
-          <button (click)="delete(v.idVideo!)">Eliminar</button>
+          <button (click)="delete(v.idVideo)">Eliminar</button>
         </td>
       </tr>
     </tbody>

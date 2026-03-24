@@ -22,7 +22,7 @@ public class SesionDto {
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
     private int aforoMaximo;
-    private int reservasActuales;
+    private long reservasActuales;
 
     public static SesionDto convertirADto(Sesion sesion) {
         SesionDto dto = new SesionDto();

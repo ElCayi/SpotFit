@@ -4,26 +4,63 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
-    <input type="text" placeholder="Título" formControlName="titulo">
-    <input type="text" placeholder="Contenido" formControlName="contenido">
-    <input type="date" formControlName="fecha">
+    <!-- Título -->
+    <div class="form-field">
+      <label for="titulo">Título</label>
+      <input id="titulo" type="text" placeholder="Ej: Horario de verano" formControlName="titulo">
+      <span class="error-msg"
+            *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+        Obligatorio
+      </span>
+    </div>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
+    <!-- Contenido -->
+    <div class="form-field">
+      <label for="contenido">Contenido</label>
+      <textarea id="contenido" rows="4" placeholder="Texto completo de la noticia" formControlName="contenido"></textarea>
+      <span class="error-msg"
+            *ngIf="form.get('contenido')?.invalid && form.get('contenido')?.touched">
+        Obligatorio
+      </span>
+    </div>
 
-    <button type="button" (click)="reset()">Cancelar</button>
+    <!-- Fila: URL Imagen + Fecha -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="urlImagen">URL de imagen (opcional)</label>
+        <input id="urlImagen" type="text" placeholder="https://ejemplo.com/imagen.jpg" formControlName="urlImagen">
+      </div>
+
+      <div class="form-field">
+        <label for="fecha">Fecha de publicación</label>
+        <input id="fecha" type="date" formControlName="fecha">
+        <span class="error-msg"
+              *ngIf="form.get('fecha')?.invalid && form.get('fecha')?.touched">
+          Obligatorio
+        </span>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
         <th>ID</th>
         <th>Título</th>
         <th>Contenido</th>
+        <th>Imagen</th>
         <th>Fecha</th>
         <th>Acciones</th>
       </tr>
@@ -33,11 +70,15 @@
       <tr *ngFor="let n of noticias">
         <td>{{ n.idNoticia }}</td>
         <td>{{ n.titulo }}</td>
-        <td>{{ n.contenido }}</td>
-        <td>{{ n.fechaPublicacion }}</td>
+        <td class="contenido-cell">{{ n.contenido }}</td>
+        <td>
+          <span *ngIf="n.urlImagen" class="has-image">Sí</span>
+          <span *ngIf="!n.urlImagen" class="no-image">No</span>
+        </td>
+        <td>{{ n.fechaPublicacion | date:'dd/MM/yyyy' }}</td>
         <td>
           <button (click)="edit(n)">Editar</button>
-          <button (click)="delete(n.idNoticia!)">Eliminar</button>
+          <button (click)="delete(n.idNoticia)">Eliminar</button>
         </td>
       </tr>
     </tbody>

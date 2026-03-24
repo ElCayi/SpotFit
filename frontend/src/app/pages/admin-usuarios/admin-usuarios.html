@@ -4,27 +4,97 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
-    <input type="text" placeholder="Nombre" formControlName="nombre">
-    <input type="email" placeholder="Email" formControlName="email">
-    <input type="text" placeholder="Rol" formControlName="rol">
+    <!-- Fila: Nombre + Apellidos -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" placeholder="Nombre" formControlName="nombre">
+        <span class="error-msg"
+              *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+          Obligatorio
+        </span>
+      </div>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
+      <div class="form-field">
+        <label for="apellidos">Apellidos</label>
+        <input id="apellidos" type="text" placeholder="Apellidos" formControlName="apellidos">
+        <span class="error-msg"
+              *ngIf="form.get('apellidos')?.invalid && form.get('apellidos')?.touched">
+          Obligatorio
+        </span>
+      </div>
+    </div>
 
-    <button type="button" (click)="reset()">Cancelar</button>
+    <!-- Email -->
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="usuario@ejemplo.com" formControlName="email">
+      <span class="error-msg"
+            *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
+        Obligatorio
+      </span>
+      <span class="error-msg"
+            *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
+        Email no válido
+      </span>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="form-field">
+      <label for="contrasena">
+        Contraseña
+        <span class="hint" *ngIf="editingId">(vacío = no cambiar)</span>
+      </label>
+      <input id="contrasena" type="password" placeholder="••••••••" formControlName="contrasena">
+      <span class="error-msg"
+            *ngIf="form.get('contrasena')?.invalid && form.get('contrasena')?.touched && !editingId">
+        Obligatoria para nuevos usuarios
+      </span>
+    </div>
+
+    <!-- Fila: Rol + Activo -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="perfilId">Rol</label>
+        <select id="perfilId" formControlName="perfilId">
+          <option [value]="1">Administrador</option>
+          <option [value]="2">Monitor</option>
+          <option [value]="3">Cliente</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Estado</label>
+        <label class="toggle">
+          <input type="checkbox" formControlName="activo">
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">{{ form.get('activo')?.value ? 'Activo' : 'Inactivo' }}</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
         <th>ID</th>
         <th>Nombre</th>
+        <th>Apellidos</th>
         <th>Email</th>
         <th>Rol</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -33,11 +103,23 @@
       <tr *ngFor="let u of usuarios">
         <td>{{ u.idUsuario }}</td>
         <td>{{ u.nombre }}</td>
+        <td>{{ u.apellidos }}</td>
         <td>{{ u.email }}</td>
-        <td>{{ u.rol }}</td>
+        <td>
+          <span class="badge"
+                [class.badge-admin]="u.rol === 'ROLE_ADMIN'"
+                [class.badge-monitor]="u.rol === 'ROLE_MONITOR'"
+                [class.badge-cliente]="u.rol === 'ROLE_CLIENTE'">
+            {{ getRolLabel(u.rol) }}
+          </span>
+        </td>
+        <td>
+          <span class="status-dot" [class.dot-active]="u.activo"></span>
+          {{ u.activo ? 'Activo' : 'Inactivo' }}
+        </td>
         <td>
           <button (click)="edit(u)">Editar</button>
-          <button (click)="delete(u.idUsuario!)">Eliminar</button>
+          <button (click)="delete(u.idUsuario)">Eliminar</button>
         </td>
       </tr>
     </tbody>

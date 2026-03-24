@@ -1,67 +1,72 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { ReservaService } from '../../services/reserva';
 import { Reserva } from '../../models/reserva';
 
 @Component({
   selector: 'app-admin-reservas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './admin-reservas.html',
-  styleUrls: ['./admin-reservas.css']
-
+  styleUrl: './admin-reservas.css'
 })
 export class AdminReservasComponent implements OnInit {
 
   reservas: Reserva[] = [];
-  form!: FormGroup;
-  editingId: number | null = null;
+  filtro: 'TODAS' | 'CONFIRMADA' | 'CANCELADA' = 'TODAS';
 
-  constructor(private service: ReservaService, private fb: FormBuilder) {}
+  constructor(private service: ReservaService) {}
 
   ngOnInit() {
-    this.form = this.fb.group({
-      usuarioId: [''],
-      sesionId: [''],
-      fecha: [''],
-      estado: ['']
-    });
-
     this.load();
   }
 
   load() {
-    this.service.getAll().subscribe(data => this.reservas = data);
+    this.service.getAll().subscribe({
+      next: data => this.reservas = data,
+      error: err => console.error('Error cargando reservas', err)
+    });
   }
 
-  submit() {
-    if (this.editingId) {
-      this.service.update(this.editingId, this.form.value).subscribe(() => {
-        this.reset();
-        this.load();
-      });
-    } else {
-      this.service.create(this.form.value).subscribe(() => {
-        this.reset();
-        this.load();
-      });
-    }
+  get reservasFiltradas(): Reserva[] {
+    if (this.filtro === 'TODAS') return this.reservas;
+    return this.reservas.filter(r => r.estado === this.filtro);
   }
 
-  edit(reserva: Reserva) {
-    this.editingId = reserva.idReserva!;
-    this.form.patchValue(reserva);
+  setFiltro(filtro: 'TODAS' | 'CONFIRMADA' | 'CANCELADA') {
+    this.filtro = filtro;
   }
 
-  delete(id: number) {
-    if (!confirm('¿Eliminar reserva?')) return;
+  cancelar(reserva: Reserva) {
+    if (!confirm('¿Cancelar la reserva de ' + reserva.nombreUsuario + '?')) return;
 
-    this.service.delete(id).subscribe(() => this.load());
+    // El backend espera la entidad Reserva con los objetos anidados
+    const payload: any = {
+      usuario: { idUsuario: reserva.idUsuario },
+      sesion:  { idSesion: reserva.idSesion },
+      fechaReserva: reserva.fechaReserva,
+      estado: 'CANCELADA'
+    };
+
+    this.service.update(reserva.idReserva, payload).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error cancelando reserva', err)
+    });
   }
 
-  reset() {
-    this.form.reset();
-    this.editingId = null;
+  eliminar(id: number) {
+    if (!confirm('¿Eliminar esta reserva permanentemente?')) return;
+    this.service.delete(id).subscribe({
+      next: () => this.load(),
+      error: err => console.error('Error eliminando', err)
+    });
+  }
+
+  get totalConfirmadas(): number {
+    return this.reservas.filter(r => r.estado === 'CONFIRMADA').length;
+  }
+
+  get totalCanceladas(): number {
+    return this.reservas.filter(r => r.estado === 'CANCELADA').length;
   }
 }

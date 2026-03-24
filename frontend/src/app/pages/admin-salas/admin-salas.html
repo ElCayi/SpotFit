@@ -4,19 +4,44 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
-    <input type="text" placeholder="Nombre" formControlName="nombre">
-    <input type="number" placeholder="Capacidad" formControlName="capacidad">
+    <!-- Fila: Nombre + Capacidad -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" placeholder="Ej: Sala A - Clases" formControlName="nombre">
+        <span class="error-msg"
+              *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+          Obligatorio
+        </span>
+      </div>
 
-    <button type="submit">
-      {{ editingId ? 'Actualizar' : 'Crear' }}
-    </button>
+      <div class="form-field">
+        <label for="capacidad">Capacidad (personas)</label>
+        <input id="capacidad" type="number" min="1" placeholder="Ej: 20" formControlName="capacidad">
+        <span class="error-msg"
+              *ngIf="form.get('capacidad')?.hasError('required') && form.get('capacidad')?.touched">
+          Obligatorio
+        </span>
+        <span class="error-msg"
+              *ngIf="form.get('capacidad')?.hasError('min') && form.get('capacidad')?.touched">
+          Mínimo 1 persona
+        </span>
+      </div>
+    </div>
 
-    <button type="button" (click)="reset()">Cancelar</button>
+    <!-- Botones -->
+    <div class="form-buttons">
+      <button type="submit" [disabled]="form.invalid">
+        {{ editingId ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="reset()">Cancelar</button>
+    </div>
 
   </form>
 
   <hr>
 
+  <!-- Tabla -->
   <table>
     <thead>
       <tr>
@@ -31,10 +56,10 @@
       <tr *ngFor="let s of salas">
         <td>{{ s.idSala }}</td>
         <td>{{ s.nombre }}</td>
-        <td>{{ s.capacidad }}</td>
+        <td>{{ s.capacidad }} personas</td>
         <td>
           <button (click)="edit(s)">Editar</button>
-          <button (click)="delete(s.idSala!)">Eliminar</button>
+          <button (click)="delete(s.idSala)">Eliminar</button>
         </td>
       </tr>
     </tbody>
