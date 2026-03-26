@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservaService } from '../../services/reserva';
-import { Reserva } from '../../models/reserva';
+import { Reserva, ReservaPayload } from '../../models/reserva';
 
 @Component({
   selector: 'app-admin-reservas',
@@ -39,9 +39,9 @@ export class AdminReservasComponent implements OnInit {
 
   cancelar(reserva: Reserva) {
     if (!confirm('¿Cancelar la reserva de ' + reserva.nombreUsuario + '?')) return;
+    if (!reserva.idReserva) return;
 
-    // El backend espera la entidad Reserva con los objetos anidados
-    const payload: any = {
+    const payload: ReservaPayload = {
       usuario: { idUsuario: reserva.idUsuario },
       sesion:  { idSesion: reserva.idSesion },
       fechaReserva: reserva.fechaReserva,

@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth';
 import { Sesion } from '../../models/sesion';
 import { Noticia } from '../../models/noticia';
 import { Video } from '../../models/video';
-import { Reserva } from '../../models/reserva';
+import { Reserva, ReservaPayload } from '../../models/reserva';
 
 type BookingSection = 'reservas' | 'citas' | 'noticias' | 'videos';
 type ReservasTab = 'disponibles' | 'reservadas';
@@ -249,8 +249,6 @@ export class BookingComponent implements OnInit {
   setDayFilter(day: 'hoy' | 'manana' | null): void {
     this.selectedDay = day;
   }
-
-  setDayFilter(day: 'hoy' | 'manana'): void { this.selectedDay = day; }
   setCategory(cat: 'TODAS' | 'YOGA' | 'BODY' | 'CICLO'): void { this.selectedCategory = cat; }
 
   setCitaType(type: 'TODAS' | 'FISIOTERAPIA' | 'NUTRICION'): void {
@@ -271,14 +269,14 @@ export class BookingComponent implements OnInit {
       return;
     }
 
-    const reservaPayload = {
+    const reservaPayload: ReservaPayload = {
       usuario: { idUsuario: usuario.id },
       sesion: { idSesion: sesion.idSesion },
       fechaReserva: new Date().toISOString(),
       estado: 'CONFIRMADA'
     };
 
-    this.reservaService.create(reservaPayload as any).subscribe({
+    this.reservaService.create(reservaPayload).subscribe({
       next: () => {
         this.cargarReservas();
         this.cargarSesiones();  // Recargar para actualizar el contador de plazas
@@ -298,15 +296,18 @@ export class BookingComponent implements OnInit {
       alert('No se ha podido identificar al usuario logueado');
       return;
     }
+    if (!reserva.idReserva) {
+      return;
+    }
 
-    const reservaPayload = {
+    const reservaPayload: ReservaPayload = {
       usuario: { idUsuario: usuario.id },
       sesion: { idSesion: reserva.idSesion },
       fechaReserva: reserva.fechaReserva,
       estado: 'CANCELADA'
     };
 
-    this.reservaService.update(reserva.idReserva, reservaPayload as any).subscribe({
+    this.reservaService.update(reserva.idReserva, reservaPayload).subscribe({
       next: () => {
         this.cargarReservas();
         this.cargarSesiones();

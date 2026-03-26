@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/login/login';
 import { SignupComponent } from './pages/signup/signup';
 import { BookingComponent } from './pages/booking/booking';
 import { adminRoleGuard } from './guards/admin-role.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: IndexComponent },          
@@ -47,6 +48,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },    
   {
     path: 'booking',
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/booking/booking').then(m => m.BookingComponent)
   },
   {
