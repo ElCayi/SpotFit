@@ -209,6 +209,7 @@ td button {
   padding: 5px 12px;
   font-size: 12px;
   margin-right: 6px;
+  margin-top: 4px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
