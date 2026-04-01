@@ -25,6 +25,8 @@ body {
   margin: 0;
   padding: 0;
   background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-main);
 }
@@ -521,4 +523,14 @@ h3 {
   .header-actions {
     display: none;
   }
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* -- Estilo del mensaje de error -- */
+
+.snackbar-error {
+  background-color: #f44336 !important;
+  color: white !important;
 }
