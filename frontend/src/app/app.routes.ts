@@ -52,6 +52,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/booking/booking').then(m => m.BookingComponent)
   },
   {
+    path: 'monitor',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/monitor/monitor').then(m => m.AdminSesionesComponent)
+  },
+  {
     path: 'fisioterapia',
     loadComponent: () =>
       import('./pages/fisioterapia/fisioterapia')

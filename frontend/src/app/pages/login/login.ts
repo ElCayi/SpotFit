@@ -33,6 +33,8 @@ export class LoginComponent {
 
         if (usuario.rol === 'ROLE_ADMIN') {
           this.router.navigate(['/admin']);
+          } else if (usuario.rol === 'ROLE_MONITOR') {
+      this.router.navigate(['/monitor']);
         } else {
           this.router.navigate(['/booking']);
         }
