@@ -22,3 +22,5 @@ Thumbs.db
 # Env
 .env
 *.log
+
+*.md

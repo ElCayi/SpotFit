@@ -54,7 +54,7 @@ export const routes: Routes = [
   {
     path: 'monitor',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/monitor/monitor').then(m => m.AdminSesionesComponent)
+    loadComponent: () => import('./pages/monitor/monitor').then(m => m.MonitorComponent)
   },
   {
     path: 'fisioterapia',

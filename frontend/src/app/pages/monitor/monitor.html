@@ -1,131 +1,149 @@
-<div class="admin-layout">
-<aside class="admin-sidebar">
+<div class="monitor-layout">
+
+  <!-- Sidebar -->
+  <aside class="monitor-sidebar">
     <div class="sidebar-logo">SPOTFIT</div>
-<button class="nav-logout" (click)="logout()">Salir</button>
+
+    <nav class="sidebar-nav">
+      <button type="button"
+        class="nav-item"
+        [class.active]="activeSection === 'sesiones'"
+        (click)="setSection('sesiones')">
+        <img src="/calendar-outline.svg" class="nav-icon" alt="icono sesiones">
+        Mis Sesiones
+      </button>
+
+      <button type="button"
+        class="nav-item"
+        [class.active]="activeSection === 'noticias'"
+        (click)="setSection('noticias')">
+        <img src="/newspaper-outline.svg" class="nav-icon" alt="icono noticias">
+        Noticias
+      </button>
+
+      <button type="button"
+        class="nav-item"
+        [class.active]="activeSection === 'videos'"
+        (click)="setSection('videos')">
+        <img src="/videocam-outline.svg" class="nav-icon" alt="icono videos">
+        Videos
+      </button>
+    </nav>
+
+    <button class="nav-logout" (click)="logout()">Salir</button>
   </aside>
 
-  <main class="admin-main">
-<div class="container">
-  <h2>Gestión de Sesiones</h2>
+  <!-- Main -->
+  <main class="monitor-main">
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+    <!-- Hero card -->
+    <section class="monitor-hero">
+      <div class="hero-text">
+        <p class="hero-kicker">Zona de monitor</p>
+        <h1>¡Hola, {{ monitorName }}!</h1>
+        <p class="hero-subtitle">{{ headerSubtitle }}</p>
+      </div>
+    </section>
 
-    <!-- Fila: Servicio + Monitor -->
-    <div class="form-row">
-      <div class="form-field">
-        <label for="servicioId">Servicio</label>
-        <select id="servicioId" formControlName="servicioId">
-          <option value="" disabled>Seleccionar servicio...</option>
-          <option *ngFor="let s of servicios" [value]="s.idServicio">
-            {{ s.nombre }} ({{ s.categoria }})
-          </option>
-        </select>
-        <span class="error-msg"
-              *ngIf="form.get('servicioId')?.invalid && form.get('servicioId')?.touched">
-          Obligatorio
-        </span>
+    <!-- ══ SESIONES ══ -->
+    <section class="monitor-section" *ngIf="activeSection === 'sesiones'">
+      <div class="section-header">
+        <h2>Agenda de sesiones</h2>
+        <p>Consulta las sesiones programadas, horarios y ocupación.</p>
       </div>
 
-      <div class="form-field">
-        <label for="monitorId">Monitor</label>
-        <select id="monitorId" formControlName="monitorId">
-          <option value="" disabled>Seleccionar monitor...</option>
-          <option *ngFor="let m of monitores" [value]="m.idUsuario">
-            {{ m.nombre }} {{ m.apellidos }}
-          </option>
-        </select>
-        <span class="error-msg"
-              *ngIf="form.get('monitorId')?.invalid && form.get('monitorId')?.touched">
-          Obligatorio
-        </span>
+      <div class="sessions-list">
+        <article class="session-card" *ngFor="let s of sesiones">
+
+          <div class="session-time">
+            <span class="time-main">{{ s.fechaInicio | date:'HH:mm' }}</span>
+            <span class="time-sep">-</span>
+            <span class="time-main">{{ s.fechaFin | date:'HH:mm' }}</span>
+            <span class="time-duration">{{ getDuracionMinutos(s) }} min</span>
+          </div>
+
+          <div class="session-info">
+            <div class="session-title-row">
+              <span class="session-service">{{ s.nombreServicio }}</span>
+              <span class="session-room">{{ s.nombreSala }}</span>
+            </div>
+            <p class="session-meta">
+              Monitor: {{ s.nombreMonitor }} · {{ s.fechaInicio | date:'dd/MM/yyyy' }}
+            </p>
+          </div>
+
+          <div class="session-status">
+            <div class="aforo-info">
+              <span class="aforo-text">{{ s.reservasActuales }}/{{ s.aforoMaximo }} plazas</span>
+              <div class="aforo-bar">
+                <div class="aforo-fill" [style.width.%]="getOcupacionPorcentaje(s)"></div>
+              </div>
+            </div>
+            <span class="aforo-pct">{{ getOcupacionPorcentaje(s) }}%</span>
+          </div>
+
+        </article>
+
+        <p class="empty-msg" *ngIf="sesiones.length === 0">
+          No hay sesiones programadas.
+        </p>
       </div>
-    </div>
+    </section>
 
-    <!-- Sala -->
-    <div class="form-field">
-      <label for="salaId">Sala</label>
-      <select id="salaId" formControlName="salaId">
-        <option value="" disabled>Seleccionar sala...</option>
-        <option *ngFor="let sala of salas" [value]="sala.idSala">
-          {{ sala.nombre }} ({{ sala.capacidad }} personas)
-        </option>
-      </select>
-      <span class="error-msg"
-            *ngIf="form.get('salaId')?.invalid && form.get('salaId')?.touched">
-        Obligatorio
-      </span>
-    </div>
-
-    <!-- Fila: Fecha inicio + Fecha fin -->
-    <div class="form-row">
-      <div class="form-field">
-        <label for="fechaInicio">Fecha y hora de inicio</label>
-        <input id="fechaInicio" type="datetime-local" formControlName="fechaInicio">
-        <span class="error-msg"
-              *ngIf="form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched">
-          Obligatorio
-        </span>
+    <!-- ══ NOTICIAS ══ -->
+    <section class="monitor-section" *ngIf="activeSection === 'noticias'">
+      <div class="section-header">
+        <h2>Noticias del gimnasio</h2>
+        <p>Últimas novedades publicadas por el equipo.</p>
       </div>
 
-      <div class="form-field">
-        <label for="fechaFin">Fecha y hora de fin</label>
-        <input id="fechaFin" type="datetime-local" formControlName="fechaFin">
-        <span class="error-msg"
-              *ngIf="form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched">
-          Obligatorio
-        </span>
+      <div class="content-grid">
+        <article class="content-card content-card-news" *ngFor="let noticia of noticias">
+          <img
+            *ngIf="noticia.urlImagen"
+            class="content-image"
+            [src]="noticia.urlImagen"
+            [alt]="noticia.titulo">
+
+          <div class="content-body">
+            <p class="content-meta">{{ noticia.fechaPublicacion | date:'dd/MM/yyyy' }}</p>
+            <h3>{{ noticia.titulo }}</h3>
+            <p>{{ noticia.contenido | slice:0:220 }}<span *ngIf="noticia.contenido.length > 220">...</span></p>
+          </div>
+        </article>
+
+        <p class="empty-msg" *ngIf="noticias.length === 0">
+          No hay noticias disponibles.
+        </p>
       </div>
-    </div>
+    </section>
 
-    <p class="form-hint">
-      El aforo se calcula automáticamente según la categoría del servicio: CLASE = 15 plazas, SALUD = 1 plaza.
-    </p>
+    <!-- ══ VIDEOS ══ -->
+    <section class="monitor-section" *ngIf="activeSection === 'videos'">
+      <div class="section-header">
+        <h2>Biblioteca fitness</h2>
+        <p>Videos de entrenamiento disponibles en la plataforma.</p>
+      </div>
 
-    <!-- Botones -->
-    <div class="form-buttons">
-      <button type="submit" [disabled]="form.invalid">
-        {{ editingId ? 'Actualizar' : 'Crear' }}
-      </button>
-      <button type="button" (click)="reset()">Cancelar</button>
-    </div>
+      <div class="content-grid">
+        <article class="content-card" *ngFor="let video of videos">
+          <div class="content-body">
+            <span class="badge">{{ video.categoria }}</span>
+            <h3>{{ video.titulo }}</h3>
+            <a class="content-link"
+               [href]="video.urlVideo"
+               target="_blank"
+               rel="noopener noreferrer">
+              Ver video
+            </a>
+          </div>
+        </article>
 
-  </form>
+        <p class="empty-msg" *ngIf="videos.length === 0">
+          No hay videos disponibles.
+        </p>
+      </div>
+    </section>
 
-  <hr>
-
-  <!-- Tabla -->
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Servicio</th>
-        <th>Monitor</th>
-        <th>Sala</th>
-        <th>Inicio</th>
-        <th>Fin</th>
-        <th>Aforo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let s of sesiones">
-        <td>{{ s.idSesion }}</td>
-        <td>{{ s.nombreServicio }}</td>
-        <td>{{ s.nombreMonitor }}</td>
-        <td>{{ s.nombreSala }}</td>
-        <td>{{ s.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ s.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ s.aforoMaximo }}</td>
-        <td>
-          <button (click)="edit(s)">Editar</button>
-          <button (click)="delete(s.idSesion)">Eliminar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-</div>
- </main>
-
+  </main>
 </div>
