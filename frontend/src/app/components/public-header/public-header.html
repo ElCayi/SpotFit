@@ -1,0 +1,18 @@
+<header class="header" [class.solid]="variant === 'solid'">
+  <div class="container header-content">
+    <div class="logo">
+      <img id="logo" src="logo.svg" alt="logo"><span> SPOTFIT</span>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/" [class.active]="activeSection === 'inicio'">Inicio</a>
+      <a routerLink="/" fragment="servicios" [class.active]="activeSection === 'servicios'">Servicios</a>
+      <a routerLink="/" fragment="funciona">Cómo funciona</a>
+      <a routerLink="/contacto">Contacto</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" routerLink="/login">Iniciar Sesión</button>
+    </div>
+  </div>
+</header>

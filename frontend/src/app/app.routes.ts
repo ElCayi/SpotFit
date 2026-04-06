@@ -80,5 +80,11 @@ export const routes: Routes = [
       import('./pages/comunidad/comunidad')
         .then(m => m.ComunidadComponent)
   },
+  {
+    path: 'contacto',
+    loadComponent: () =>
+      import('./pages/contacto/contacto')
+        .then(m => m.ContactoComponent)
+  },
   { path: '**', redirectTo: '' },           
 ];

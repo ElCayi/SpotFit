@@ -5,10 +5,10 @@ import { PublicHeaderComponent } from '../../components/public-header/public-hea
 import { PublicFooterComponent } from '../../components/public-footer/public-footer';
 
 @Component({
-  selector: 'app-fisioterapia',
+  selector: 'app-contacto',
   standalone: true,
   imports: [CommonModule, RouterModule, PublicHeaderComponent, PublicFooterComponent],
-  templateUrl: './comunidad.html',
-  styleUrls: ['./comunidad.css']
+  templateUrl: './contacto.html',
+  styleUrl: './contacto.css',
 })
-export class ComunidadComponent {}
+export class ContactoComponent {}

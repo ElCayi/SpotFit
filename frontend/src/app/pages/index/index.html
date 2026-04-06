@@ -1,21 +1,4 @@
-<header class="header">
-  <div class="container header-content">
-    <div class="logo"> 
-        <img id="logo" src="logo.svg" alt="logo"><span> SPOTFIT</span></div>
-
-    <nav class="nav">
-      <a href="">Producto</a>
-      <a href="#servicios">Servicios</a>
-      <a href="#funciona">Cómo funciona</a>
-      <a href="#packs">Contenidos</a>
-    </nav>
-
-    <div class="header-actions">
-      <button class="btn btn-primary" routerLink="/login">Iniciar Sesión</button>
-      <!--<button class="btn btn-outline" routerLink="/signup">Crear Cuenta</button> -->
-    </div>
-  </div>
-</header>
+<app-public-header activeSection="inicio"></app-public-header>
 
 <main>
   <!-- Hero -->
@@ -30,7 +13,7 @@
           desde nuestra web.</p>
         <div class="hero-buttons">
           <!-- <button class="btn btn-primary" routerLink="/signup">Únete al Club</button> -->
-           <a routerLink="/fisioterapia" fragment="mapa"><button class="btn btn-outline"> Encuéntranos</button></a>
+           <a routerLink="/contacto"><button class="btn btn-outline"> Encuéntranos</button></a>
         </div>
       </div> 
     </div> 
@@ -59,7 +42,7 @@
           <h3>🤼‍♂️ Clases dirigidas</h3>
           <p>Entrenamientos grupales para todos los niveles.</p>
         </article>
-        <article class="card" routerLink="comunidad">
+        <article class="card" routerLink="/comunidad">
           <img src="comunidad.png" alt="comunidad" class="card-img">
           <h3>👥 Comunidad SPOTFIT</h3>
           <p>Eventos, retos y mucho más.</p>
@@ -174,21 +157,11 @@
         </p>
         <div class="hero-buttons">
    <!-- <button class="btn btn-primary" routerLink="/signup">Únete al Club</button> --> 
-          <button class="btn btn-outline">Encuéntranos</button>
+          <button class="btn btn-outline" routerLink="/contacto">Encuéntranos</button>
         </div>
       </div>
-      <article class="gym-card">
-        <div>
-          <span class="pill">Cross Training - 10:00 a 11:30</span>
-          <p>Plazas disponibles:</p>
-          <div class="availability">
-            <img src="people-circle-outline.svg" alt="disponible" class="icono-disponible">
-            <h3>8/15</h3>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
+      </div>
+    </section>
 
   <!-- Cómo funciona -->
   <section id="funciona" class="section section-alt">
@@ -265,35 +238,4 @@
   </section>
 </main>
 
-<footer id="contacto" class="footer">
-  <div class="container footer-grid">
-    <div>
-      <h3>Equipo SPOTFIT</h3>
-      <ul>
-        <li>Sobre Spotfit</li>
-        <li>¿Quiénes somos?</li>
-        <li>Trabaja con nosotros</li>
-        <li>Blog</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Contacto</h3>
-      <ul>
-        <li>Ubicación: Barcelona, España</li>
-        <li>Email: contacto@spotfit.com</li>
-        <li>Instagram: @spotfitgym</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Spotfit</h3>
-      <ul>
-        <li>Política de privacidad</li>
-        <li>Términos y condiciones</li>
-        <li>Cookies</li>
-      </ul>
-    </div>
-  </div>
-  <div class="container footer-bottom">
-    <p>Spotfit · Todos los derechos reservados</p>
-  </div>
-</footer>
+<app-public-footer></app-public-footer>

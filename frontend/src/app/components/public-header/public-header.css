@@ -1,0 +1,25 @@
+.header.solid {
+  background: #0f172a;
+  backdrop-filter: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+#logo {
+  height: 30px;
+  width: auto;
+  max-width: none;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.nav a.active {
+  color: var(--text);
+}
+
+.nav a.active::after {
+  width: 100%;
+}

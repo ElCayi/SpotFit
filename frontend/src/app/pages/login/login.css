@@ -152,6 +152,22 @@
     filter: brightness(1.1);
 }
 
+.back-link {
+    margin-top: 12px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 13px;
+    cursor: pointer;
+    align-self: center;
+    transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.back-link:hover {
+    color: #ff7ac4;
+    text-shadow: 0 0 10px rgba(255, 122, 196, 0.45);
+}
+
 .register-text {
     margin-top: 16px;
     font-size: 13px;
